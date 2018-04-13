@@ -1,0 +1,103 @@
+/**
+ * Validates value type
+ * @param value
+ * @param type
+ * @return {*}
+ */
+global.validateType = function validateType(value, type) {
+	// TODO: reimplement using valueType()
+	switch(type) {
+		case String:
+			return typeof(value) === 'string' || value instanceof String;
+
+		case Number:
+			return typeof(value) === 'number' || value instanceof Number;
+
+		case Boolean:
+			return typeof(value) === 'boolean' || value instanceof Boolean;
+
+		case Object:
+			return value && typeof(value) === 'object' || value instanceof Object;
+
+		default:
+			return value instanceof type;
+	}
+};
+
+/**
+ * Returns value type
+ * @param value
+ * @param objectConstructors
+ * @return {*}
+ */
+global.valueType = function valueType(value, objectConstructors = false) {
+	if(typeof(value) === 'string' || value instanceof String) {
+		return String;
+	}
+
+	if(typeof(value) === 'number' || value instanceof Number) {
+		return Number;
+	}
+
+	if(typeof(value) === 'boolean' || value instanceof Boolean) {
+		return Boolean;
+	}
+
+	if(typeof(value) === 'object' && value instanceof Array) {
+		return Array;
+	}
+
+	if(typeof(value) === 'function' && value instanceof Function) {
+		return Function;
+	}
+
+	if(value && typeof(value) === 'object' && value instanceof Object) {
+		if(objectConstructors && value.constructor && value instanceof value.constructor) {
+			return value.constructor;
+		}
+
+		return Object;
+	}
+
+	if(value) {
+		console.warn('Unknown value')
+	}
+
+	return null;
+};
+
+/**
+ * Returns whether object is direct instance of Object
+ * @param value
+ * @return {*|boolean}
+ */
+global.isPlainObject = function isPlainObject(value) {
+	return value && value instanceof Object && value.constructor === Object;
+};
+
+/**
+ * Returns wheither value is undefined or null
+ * @param value
+ * @return {boolean}
+ */
+global.undefinedOrNull = function undefinedOrNull(value) {
+	return typeof(value) === 'undefined' || value === null;
+};
+
+/**
+ * Returns whether value is not undefined or null
+ * @param value
+ * @return {boolean}
+ */
+global.notUndefinedOrNull = function notUndefinedOrNull(value) {
+	return !empty(value);
+};
+
+/**
+ * @alias undefinedOrNull
+ * @param value
+ * @return {*}
+ */
+global.empty = function empty(value) {
+	return undefinedOrNull(value);
+};

@@ -1,0 +1,5 @@
+PassengerAppType node
+PassengerHighPerformance off
+PassengerStartupFile compiled/backend.min.js
+PassengerNodejs      /home/m/msecntj4/.local/bin/node
+PassengerAppRoot     /home/m/msecntj4/potbs.unexpectedbehavior.ru/application

@@ -1,0 +1,66 @@
+@charset "utf-8";
+.zmdi:before {
+  font-size: 1.6em;
+  margin-left: 2px;
+}
+#statusPanel {
+  background-color: #1f83d7;
+  padding: 0 0 0 8px;
+}
+#statusPanel > div > p,
+#statusPanel > div > h2 {
+  color: #FFFFFF;
+}
+#statusPanel > .back-title {
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  margin-right: auto;
+}
+#statusPanel > .back-icon {
+  margin-left: -0.5em;
+}
+#statusPanel .dmi-system-clock {
+  margin-right: auto;
+}
+#statusPanel .dmi-system-clock .clock-separator {
+  animation: dmi-system-clock-animation 2s step-end infinite;
+}
+@keyframes dmi-system-clock-animation {
+  50% {
+    opacity: 0.5;
+  }
+}
+#statusPanel .dmi-system-clock p {
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.85em;
+  margin-top: 0.15rem;
+  opacity: 0.85;
+}
+#statusPanel .dmi-system-clock h2 {
+  font-size: 1.5em;
+}
+#statusPanel .dmi-system-back {
+  margin-right: auto;
+}
+#statusPanel .dmi-notification-button {
+  color: white;
+}
+#statusPanel .dmi-notification-button.js--opened {
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.5) inset;
+  color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+#statusPanel .dmi-notification-count {
+  background-color: #ef6c00;
+  color: white;
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
+  font-size: 60%;
+  padding: 0 0.3em;
+  border-radius: 0.5em;
+}

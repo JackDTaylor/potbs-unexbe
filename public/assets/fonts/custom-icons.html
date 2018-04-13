@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>custom-icons</title>
+    <style>
+
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        .preview {
+            width: 100px;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .preview .inner {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background: #f5f5f5;
+            -webkit-border-radius: 3px 3px 0 0;
+            -moz-border-radius: 3px 3px 0 0;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .preview .inner i {
+            line-height: 85px;
+            font-size: 40px;
+            color: #333;
+        }
+
+        .label {
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 10px;
+            font-family: Monaco, monospace;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: #ddd;
+            -webkit-border-radius: 0 0 3px 3px;
+            -moz-border-radius: 0 0 3px 3px;
+            border-radius: 0 0 3px 3px;
+            color: #666;
+        }
+
+        @font-face {
+    font-family: "custom-icons";
+    src: url("./custom-icons.eot?1321325d7f9d903fc37ad0fc0a8b597d?#iefix") format("embedded-opentype"),
+url("./custom-icons.woff2?1321325d7f9d903fc37ad0fc0a8b597d") format("woff2"),
+url("./custom-icons.woff?1321325d7f9d903fc37ad0fc0a8b597d") format("woff"),
+url("./custom-icons.ttf?1321325d7f9d903fc37ad0fc0a8b597d") format("truetype"),
+url("./custom-icons.svg?1321325d7f9d903fc37ad0fc0a8b597d#custom-icons") format("svg");
+}
+
+i {
+    line-height: 1;
+}
+
+i:before {
+    font-family: custom-icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    vertical-align: top;
+}
+
+.icons-factory:before {
+    content: "\f101";
+}
+.icons-industry-cdr:before {
+    content: "\f102";
+}
+.icons-industry-simple:before {
+    content: "\f103";
+}
+.icons-industry:before {
+    content: "\f104";
+}
+
+
+    </style>
+</head>
+<body>
+
+    <h1>custom-icons</h1>
+
+
+        <div class="preview">
+            <span class="inner">
+                <i class="icons-factory"></i>
+            </span>
+            <br>
+            <span class='label'>factory</span>
+        </div>
+
+
+        <div class="preview">
+            <span class="inner">
+                <i class="icons-industry-cdr"></i>
+            </span>
+            <br>
+            <span class='label'>industry-cdr</span>
+        </div>
+
+
+        <div class="preview">
+            <span class="inner">
+                <i class="icons-industry-simple"></i>
+            </span>
+            <br>
+            <span class='label'>industry-simple</span>
+        </div>
+
+
+        <div class="preview">
+            <span class="inner">
+                <i class="icons-industry"></i>
+            </span>
+            <br>
+            <span class='label'>industry</span>
+        </div>
+
+
+</body>
+</html>

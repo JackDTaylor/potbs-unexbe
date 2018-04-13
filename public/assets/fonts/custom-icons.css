@@ -1,0 +1,32 @@
+@font-face {
+    font-family: "custom-icons";
+    src: url("./custom-icons.eot?61c46eaec752b01e50594803106f3ae7?#iefix") format("embedded-opentype"),
+url("./custom-icons.woff2?61c46eaec752b01e50594803106f3ae7") format("woff2"),
+url("./custom-icons.woff?61c46eaec752b01e50594803106f3ae7") format("woff"),
+url("./custom-icons.ttf?61c46eaec752b01e50594803106f3ae7") format("truetype"),
+url("./custom-icons.svg?61c46eaec752b01e50594803106f3ae7#custom-icons") format("svg");
+}
+
+i {
+    line-height: 1;
+}
+
+i:before {
+    font-family: custom-icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    vertical-align: top;
+}
+
+.icons-factory:before {
+    content: "\f101";
+}
+.icons-industry-cdr:before {
+    content: "\f102";
+}
+.icons-industry-simple:before {
+    content: "\f103";
+}
+.icons-industry:before {
+    content: "\f104";
+}

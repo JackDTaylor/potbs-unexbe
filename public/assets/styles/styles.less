@@ -1,0 +1,144 @@
+@import "./images";
+@import "./icons";
+@import "./utils";
+@import "./layout/status-panel";
+
+#systemLoadingMask, .dmi-loadable, .dmi-loader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: fade(black, 15%) url(@loader) no-repeat center center;
+}
+
+.dmi-loadable, .dmi-loader {
+	background: fade(black, 5%) url(@loader-light) no-repeat center center;
+}
+
+html body {
+	margin: 0;
+	padding: 0;
+	min-width: 0;
+	min-height: 0;
+	background-color: #f4f4f4;
+}
+
+.dmi-drawer-contents {
+	width: @drawer-width;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	.settings-section {
+		margin-top: auto;
+		flex-grow: 0;
+	}
+}
+
+
+
+#applicationTitle {
+	margin-right: auto;
+}
+
+#contentWrapper {
+	@media @screen-lg-or-more {
+		&:before {
+			content: '';
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: @drawer-width;
+			height: @appbar-height;
+			background-color: @appbar-color;
+		}
+	}
+
+	border-top: @appbar-height-mobile solid @structural-border-top-color;
+	box-sizing: border-box;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+
+	@media @screen-landscape {
+		border-top: @appbar-height-landscape solid @structural-border-top-color;
+	}
+
+	@media @screen-lg-or-more {
+		border-top: @appbar-height solid @structural-border-top-color;
+	}
+}
+
+@media @screen-lg-or-more {
+	#applicationHeader, #contentWrapper {
+		box-sizing: border-box;
+		border-left: @drawer-width solid @structural-border-left-color;
+	}
+
+	#applicationTitle {
+		margin-left: 0.85em;
+	}
+}
+
+@media @screen-sm-or-more {
+	#contentWrapper {
+		padding: 1em 0.5em;
+	}
+}
+@media @screen-lg-or-more {
+	#contentWrapper {
+		padding: 1em 1.5em;
+	}
+}
+
+.drawer.drawer-permanent {
+	position: relative;
+
+	&:after {
+		content: ' ';
+		position: fixed;
+		background-color: darken(@appbar-color, 10%);
+		width: 1px;
+		height: @appbar-height;
+		top: 0;
+		left: @drawer-width;
+		z-index: 1300;
+	}
+}
+
+.dmi.dmi-placeholder {
+	text-align: center;
+	padding: 1em;
+
+	//display: flex;
+	//align-items: center;
+	//justify-content: center;
+	//color: #999;
+
+	> div[role="progressbar"] {
+		margin-right: 0.5em;
+	}
+}
+
+
+#notificationPanel {
+	background-color: fade(black, 5%);
+
+	h2 {
+		padding: 0.5em 0.25em;
+	}
+
+	.notification {
+		margin-top: 0;
+	}
+}
+
+//.dmi-icon-react-semantic-2 {
+//	font-family: Semantic2-Icons, monospace;
+//}
+//
+//.dmi-icon-react-semantic {
+//	font-family: Semantic-Icons, monospace;
+//}
