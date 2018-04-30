@@ -2,32 +2,33 @@
 
 export default class Link extends ReactComponent {
 	@prop href;
+	@prop target;
 	@prop children;
 
-	@state target;
+	@state action;
 
 	async componentWillMount() {
-		awaitEx(this.href, value => this.target = value);
+		awaitEx(this.href || this.target, value => this.action = value);
 	}
 
 	get actionProps() {
-		let target = this.target;
+		let action = this.action;
 
 		let href;
 		let onClick;
 		let children = this.children;
 
-		if(target instanceof FrontendModel) {
-			children = target.name;
-			href = target.viewUrl;
+		if(action instanceof FrontendModel) {
+			children = children || action.name;
+			href = action.viewUrl;
 		}
 
-		if(valueType(target) == Function) {
-			onClick = target;
+		if(valueType(action) == Function) {
+			onClick = action;
 		}
 
-		if(valueType(target) == String) {
-			href = target;
+		if(valueType(action) == String) {
+			href = action;
 		}
 
 		if(href && /^(\w+:)?\/\//.test(href) == false) {
@@ -44,7 +45,7 @@ export default class Link extends ReactComponent {
 	}
 
 	render() {
-		if(!this.target) {
+		if(!this.action) {
 			return '';
 		}
 

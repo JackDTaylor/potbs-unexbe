@@ -14,6 +14,7 @@ export default class AclUser extends PlatformSpecificModel {
 	@cellRenderer(CellRenderers.EmailCell)
 	@property email;
 
+	@rowLink
 	@property full_name = {
 		expr: `CONCAT(first_name, '<!>', last_name)`,
 

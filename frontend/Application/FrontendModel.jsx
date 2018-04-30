@@ -37,6 +37,10 @@ const frontendProperties = [
 			});
 
 			layout[key] = new PropertyDescriptor(key, layout[key]);
+
+			if(layout[key].listRowLink) {
+				layout[key].cellRenderer = CellRenderers.RowLinkCell;
+			}
 		});
 
 		Object.defineProperty(this, 'Code', {value: code, configurable: true });

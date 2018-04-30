@@ -1,30 +1,4 @@
 /**
- * Validates value type
- * @param value
- * @param type
- * @return {*}
- */
-global.validateType = function validateType(value, type) {
-	// TODO: reimplement using valueType()
-	switch(type) {
-		case String:
-			return typeof(value) === 'string' || value instanceof String;
-
-		case Number:
-			return typeof(value) === 'number' || value instanceof Number;
-
-		case Boolean:
-			return typeof(value) === 'boolean' || value instanceof Boolean;
-
-		case Object:
-			return value && typeof(value) === 'object' || value instanceof Object;
-
-		default:
-			return value instanceof type;
-	}
-};
-
-/**
  * Returns value type
  * @param value
  * @param objectConstructors

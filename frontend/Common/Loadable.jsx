@@ -3,6 +3,7 @@ import Loader from "./Loader";
 export default class Loadable extends ReactComponent {
 	@prop c;
 	@prop cRef;
+	@prop onBeforeReady = fn => {};
 
 	@state loadedComponent;
 	@state _c = 0;

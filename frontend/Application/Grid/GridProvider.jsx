@@ -84,6 +84,6 @@ export default class GridProvider {
 	}
 
 	get lastTotal() {
-		return this._queryMeta.total;
+		return this._queryMeta.total || 0;
 	}
 }

@@ -223,6 +223,7 @@ export default class GridList extends ReactComponent {
 						pageSize={this.pageSize}
 						onPageSizeChange={v => this.pageSize = v}
 					/>
+
 					<CustomPaging totalCount={this.total} />
 
 					<RowDetailState />

@@ -6,8 +6,13 @@ export default class ContentWrapper extends ReactComponent {
 	@state component;
 	@state params;
 
+	@state isLoading = false;
+
 	async mount(component, params) {
-		this.setState({component, params});
+		this.component = component;
+		this.params = params;
+
+		this.commitState();
 	}
 
 	render() {
@@ -20,7 +25,6 @@ export default class ContentWrapper extends ReactComponent {
 				c={this.component}
 				cRef={x => this.page=x}
 				params={this.params}
-				test={++_c}
 			/>
 		);
 	}

@@ -16,6 +16,7 @@ global.abstract = function(proto, field) {
 global.scoped  = scope  =>  defineKey('scope',  scope);
 global.secure  = defineKey('secure', true);
 global.hidden  = defineKey('hidden', true);
+global.rowLink = defineKey('rowLink', true);
 global.type    = type => defineKey('type', type);
 
 global.cellRenderer   = fn => defineKey('cellRenderer',   fn);
@@ -97,12 +98,15 @@ global.PropertyDescriptor = class PropertyDescriptor {
 		return this.queryable;
 	}
 
+	get listRowLink() {
+		return !this.cellRenderer && (this.name == 'name' || this.rowLink)
+	}
+
 	postprocess() {
 		if(this.name == ID) {
 			// ID props are always readonly and hidden
 			this.writable = false;
 			this.hidden = true;
-
 		}
 
 		if(this.expr && !this.set) {
