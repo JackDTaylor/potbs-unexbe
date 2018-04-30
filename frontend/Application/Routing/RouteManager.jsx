@@ -43,7 +43,7 @@ class RouteManager {
 		this.page(url, {
 			'/':                  new ModelGridEndpoint(modelCode),
 			'/add':               new /*ModelCreate*/Endpoint(),
-			'/{id:numeric}':      new /*ModelView*/Endpoint(),
+			'/{id:numeric}':      new ModelViewEndpoint(modelCode),
 			'/{id:numeric}/edit': new /*ModelEdit*/Endpoint(),
 		});
 	}
