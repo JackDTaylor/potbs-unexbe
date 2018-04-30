@@ -1,5 +1,5 @@
 import Endpoint from "../Endpoint";
-import ViewProvider from "../../View/ViewProvider";
+import ViewProvider from "../../Data/View/ViewProvider";
 
 export default class ModelViewEndpoint extends Endpoint {
 

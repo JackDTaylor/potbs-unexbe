@@ -43,6 +43,12 @@ export default class ErrorPage extends Page {
 		return 'Сообщите об этом администратору ресурса';
 	}
 
+	componentWillMount() {
+		if(this.params.error) {
+			console.error(this.params.error);
+		}
+	}
+
 	render() {
 		return (
 			<div {...this.cls}>

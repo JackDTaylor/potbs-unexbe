@@ -1,8 +1,9 @@
 import Endpoint from "../Endpoint/Endpoint";
 import Redirect from "../Endpoint/Redirect";
-import ModelGridEndpoint from "../Endpoint/Model/ModelGridEndpoint";
 import Route from "./Route";
 import Alias from "../Endpoint/Alias";
+import ModelGridEndpoint from "../Endpoint/Model/ModelGridEndpoint";
+import ModelViewEndpoint from "../Endpoint/Model/ModelViewEndpoint";
 
 class RouteManager {
 	get ParamRegex() {

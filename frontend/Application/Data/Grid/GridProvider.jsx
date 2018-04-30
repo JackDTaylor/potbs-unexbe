@@ -1,22 +1,7 @@
-export default class GridProvider {
-	id;
-	modelCode;
-	model;
+import ModelProvider from "../ModelProvider";
 
+export default class GridProvider extends ModelProvider {
 	_queryMeta;
-
-	async getModel() {
-		if(!this.model) {
-			this.model = await GetModel(this.modelCode);
-		}
-
-		return this.model;
-	}
-
-	constructor(id, modelCode) {
-		this.id = id;
-		this.modelCode = modelCode;
-	}
 
 	get gridConfig() {
 		if(!this.model) {

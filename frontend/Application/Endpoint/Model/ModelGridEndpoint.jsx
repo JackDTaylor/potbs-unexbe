@@ -1,5 +1,5 @@
 import Endpoint from "../Endpoint";
-import GridProvider from "../../Grid/GridProvider";
+import GridProvider from "../../Data/Grid/GridProvider";
 
 export default class ModelGridEndpoint extends Endpoint {
 

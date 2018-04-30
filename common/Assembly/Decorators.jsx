@@ -89,7 +89,6 @@ global.asyncCatch = function(proto, field, descriptor) {
 			try {
 				return await original.apply(this, arguments);
 			} catch(error) {
-				console.error(error);
 				await AppController.routeError(500, {error});
 			}
 		}
