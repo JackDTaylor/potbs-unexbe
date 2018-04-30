@@ -5,8 +5,6 @@ import SystemClock from "./SystemClock";
 import IconButton from "../Common/IconButton";
 
 export default class StatusPanel extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'StatusPanel'] };
-
 	@prop backButtonHandler;
 	@prop showBackButton;
 

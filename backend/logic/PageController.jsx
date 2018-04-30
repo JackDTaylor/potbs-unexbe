@@ -11,7 +11,7 @@ const embedScript = function(code) {
 
 export default class PageController extends Controller {
 	async getPageTemplate(data = {}) {
-		const file = Application.Instance.path('/public/assets/compiled/template.html');
+		const file = Application.path('/public/assets/compiled/template.html');
 
 		let template = await FileSystemAsync.read(file);
 
@@ -28,10 +28,19 @@ export default class PageController extends Controller {
 		return template;
 	}
 
+	async getFrontendData() {
+		let version = (await this.context.version).full;
+		let modelBundles = ModelManager.bundleUrls;
+
+		return { version, customIcons, modelBundles };
+	}
+
 	async resolve() {
+		const frontendData = await this.getFrontendData();
+
 		this.context.sendResponse(await this.getPageTemplate({
-			frontendConfig: embedScript(`
-				window.customIcons = ${JSON.stringify(customIcons)};
+			frontendData: embedScript(`
+				window.frontendData = ${JSON.stringify(frontendData)};
 			`)
 		}));
 	}

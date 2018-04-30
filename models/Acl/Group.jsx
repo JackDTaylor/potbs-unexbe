@@ -1,2 +1,2 @@
-export default class AclGroup extends BaseModel {
+export default class AclGroup extends PlatformSpecificModel {
 }

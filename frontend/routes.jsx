@@ -1,21 +1,26 @@
-import ModelEndpointBundle from "./Application/Endpoint/EndpointBundle/Model";
-import ModelProxy from "./Application/Proxy/Model";
-import Redirect from "./Application/Endpoint/Redirect";
-import Endpoint from "./Application/Endpoint/Endpoint";
-import EndpointBundle from "./Application/Endpoint/EndpointBundle";
+import "./Application/Routing/RouteManager";
+import ModelGridEndpoint from "./Application/Endpoint/Model/ModelGridEndpoint";
 
-export default routes => (
-	new EndpointBundle({
-		'/': new Endpoint('Model/ListPage', {
-			proxy: new ModelProxy('Acl/User')
-		}),
+RouteManager.modelBundles();
 
-		'/craft': new EndpointBundle({
-			'/': new Redirect('/craft/resource/'),
-			'/resource': new ModelEndpointBundle('Craft/Resource'),
-			'/resource-ingredient': new ModelEndpointBundle('Craft/Resource/Ingredient'),
-			'/factory': new ModelEndpointBundle('Craft/Factory'),
-			'/project': new ModelEndpointBundle('Craft/Resource'),
-		})
+RouteManager.scope('/', scope => {
+	scope.index(new ModelGridEndpoint('Acl/User'));
+
+	scope.redirect('/r{id:numeric}', '/craft/resource/{id}');
+
+	scope('craft', scope => {
+		scope('resource', scope => {
+			scope.redirect('/id{id}/edit', '/');
+			scope.redirect('/id{id}/{param}', '/');
+			scope.redirect('/{id}/{param}', '/');
+		});
+
+		scope('factory', scope => {
+			scope.redirect('/{a:numeric}_{b:literal}/{id}/edit', '/');
+			scope.redirect('/{a:numeric}_{b:literal}/{id}', '/');
+			scope.redirect('/{a:numeric}_{b:literal}/edit', '/');
+		});
 	})
-);
+});
+
+export default RouteManager.compile();

@@ -1,3 +1,4 @@
+const UpgradeBuildNumber = require('./version-plugin').UpgradeBuildNumber;
 const globalModules = __dirname + `/../node_modules`;
 
 module.exports = {
@@ -5,6 +6,9 @@ module.exports = {
 	externals: {
 		'react': 'React',
 		'react-dom': 'ReactDOM',
+		'material-ui': 'MaterialUI',
+		'@devexpress/dx-react-grid': 'DxReactGrid',
+		'@devexpress/dx-react-grid-material-ui': 'DxReactGridMaterialUi',
 	},
 	watchOptions: {
 		ignored: [`/node_modules/`],
@@ -13,8 +17,10 @@ module.exports = {
 	resolve: {
 		extensions: [".jsx", ".webpack.js", ".web.js", ".js", ".json"],
 	},
-	plugins: [],
-		resolveLoader: {
+	plugins: [
+		new UpgradeBuildNumber()
+	],
+	resolveLoader: {
 		modules: [ globalModules ],
 		extensions: [ '.js', '.json' ],
 		mainFields: [ 'loader', 'main' ]

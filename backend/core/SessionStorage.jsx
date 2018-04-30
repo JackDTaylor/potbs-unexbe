@@ -1,4 +1,3 @@
-import {APPROOT} from "../config";
 import {FileSystemAsync, FileSystemSync} from "./FileSystem";
 import md5 from 'md5';
 
@@ -10,7 +9,7 @@ export default class SessionStorage {
 		return sessionStorage || (sessionStorage = new SessionStorage());
 	}
 
-	file = `${APPROOT}/data/sessions.json`;
+	file = Application.path(`/data/sessions.json`);
 	storage = null;
 
 	isInitialized = false;

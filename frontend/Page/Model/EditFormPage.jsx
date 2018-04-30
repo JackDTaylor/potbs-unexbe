@@ -1,25 +1,23 @@
 import FormPage from "../FormPage";
 
 export default class ModelEditFormPage extends FormPage {
-	get cssClass() { return [...super.cssClass, 'ModelListPage'] };
-
 	model;
 
 	get pageTitle() {
-		let name = this.model.Name || new Noun('элемент');
+		// let name = this.model.Name || new Noun('элемент');
 
-		return this.model ? `Редактирование ${name.sin.gen}` : super.pageTitle;
+		// return this.model ? `Редактирование ${name.sin.gen}` : super.pageTitle;
 	}
 
 	async getDefaults() {
-		const entry = this.model.findById(2);
-		console.log(entry);
-		window.eee = entry;
-		return entry;
+		// const entry = this.model.FindById(2);
+		// console.log(entry);
+		// window.eee = entry;
+		// return entry;
 	}
 
 	async preparePage() {
-		this.model = await this.proxy.model;
+		// this.model = await this.proxy.model;
 
 		await super.preparePage();
 

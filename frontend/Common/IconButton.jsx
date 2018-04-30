@@ -1,8 +1,6 @@
 import {IconButton as MuiIconButton} from "material-ui";
 
 export default class IconButton extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'IconButton'] };
-
 	get buttonProps() {
 		let props = this.props;
 

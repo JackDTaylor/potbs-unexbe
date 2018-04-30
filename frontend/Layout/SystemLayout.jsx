@@ -17,8 +17,6 @@ import NotificationPanel from "./notification/NotificationPanel";
 // }))
 
 export default class SystemLayout extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'SystemLayout'] };
-
 	handleChangePage() {
 		console.log(this, arguments);
 	}

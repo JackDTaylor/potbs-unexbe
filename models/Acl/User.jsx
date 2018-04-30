@@ -1,10 +1,21 @@
-@modelName('пользователь')
-export default class AclUser extends BaseModel {
-	static ListColumnOrder = ['full_name', 'email', 'phone'];
+@named('пользователь')
+@registerBundle('/')
+export default class AclUser extends PlatformSpecificModel {
+	@hidden @property first_name;
+	@hidden @property last_name;
 
-	@property static full_name = {
-		type: Type.STRING,
-		expr: `CONCAT(first_name, ' ', last_name)`,
+	get name() {
+		return this.full_name;
+	}
+
+	@type(PropertyType.PHONE(255))
+	@property phone;
+
+	@cellRenderer(CellRenderers.EmailCell)
+	@property email;
+
+	@property full_name = {
+		expr: `CONCAT(first_name, '<!>', last_name)`,
 
 		get(value) {
 			return value.replace(/<!>/g, ' ');
@@ -18,7 +29,7 @@ export default class AclUser extends BaseModel {
 		}
 	};
 
-	@hidden
-	@scope(Scope.Writable)
-	@property static password_hash;
+	@secure @property password_hash = {
+		set: value => String(value).md5()
+	};
 }

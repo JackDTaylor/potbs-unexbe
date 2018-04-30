@@ -24,3 +24,8 @@
 "fieldnames^Craft/Factory:resources";"Производимые ресурсы"
 "fieldnames^Acl/User:groups";"Группы"
 "fieldnames^Craft/Resource:usages";"Используется в крафте"
+"fieldnames^id";"ID"
+"fielddesc^__default__";""
+"fieldph^__default__";""
+"fieldnames^Craft/Factory:owner";"Владелец"
+"fieldnames^Acl/User:factories";"Постройки"

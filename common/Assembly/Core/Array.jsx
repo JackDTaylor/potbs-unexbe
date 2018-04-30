@@ -1,35 +1,98 @@
-export default () => {
-	Array.prototype.first = function() {
-		return this[0];
-	};
+const arrayFn = function(name, value) {
+	Object.defineProperty(Array.prototype, name, { enumerable: false, configurable: true, value });
+};
 
-	Array.prototype.last = function() {
-		return this[ this.length - 1 ];
-	};
+const arrayGetter = function(name, get) {
+	Object.defineProperty(Array.prototype, name, { enumerable: false, configurable: true, get });
+};
 
-	Array.prototype.has = function(element) {
-		return this.indexOf(element) >= 0;
-	};
+/** @class Array
+ *  @property first */
+arrayGetter('first', function() {
+	return this[0];
+});
 
-	Array.prototype.mapAsyncConcurrent = async function(callback) {
-		return await Promise.all(this.map(callback));
-	};
+/** @class Array
+ *  @property last */
+arrayGetter('last', function() {
+	return this[ this.length - 1 ];
+});
 
-	Array.prototype.forEachAsyncConcurrent = async function(callback) {
-		await Promise.all(this.map(callback));
-	};
+/** @class Array
+ *  @property has */
+arrayFn('has', function(element) {
+	return this.indexOf(element) >= 0;
+});
 
-	Array.prototype.mapAsync = async function(callback, thisArg = this) {
-		const result = [];
+/** @class Array
+ *  @property indexBy */
+arrayFn('indexBy', function(keyExpr) {
+	return Object.combine(this.map(keyExpr), this);
+});
 
-		for(let i = 0; i < this.length; i++) {
-			result[i] = await callback.apply(thisArg, [this[i], i, this]);
-		}
+/** @class Array
+ *  @property mapAsyncConcurrent */
+arrayFn('mapAsyncConcurrent', async function(callback) {
+	let results = [];
 
-		return result;
-	};
+	await this.forEachAsyncConcurrent(async(e, i) => {
+		results[i] = await callback.apply(this, [this[i], i, this]);
+	});
 
-	Array.prototype.forEachAsync = async function(callback) {
-		await this.mapAsync(callback);
-	};
-}
+	return results;
+});
+
+/** @class Array
+ *  @property forEachAsyncConcurrent */
+arrayFn('forEachAsyncConcurrent', async function(callback) {
+	await Bluebird.all(this.map(callback));
+});
+
+/** @class Array
+ *  @property mapAsync */
+arrayFn('mapAsync', async function(callback, thisArg = this) {
+	const result = [];
+
+	for(let i = 0; i < this.length; i++) {
+		result[i] = await callback.apply(thisArg, [this[i], i, this]);
+	}
+
+	return result;
+});
+
+/** @class Array
+ *  @property forEachAsync */
+arrayFn('forEachAsync', async function(callback) {
+	await this.mapAsync(callback);
+});
+
+/** @class Array
+ *  @property @@iterator */
+arrayFn('@@iterator', function() {
+	throw new Error('Array @@iterator is used');
+});
+
+/** @class Array
+ *  @property mapReact */
+arrayFn('mapReact', function(fn) {
+	return this.map((e, i) => <React.Fragment key={i}>{fn.apply(this, [e, i])}</React.Fragment>)
+});
+
+/** @class Array
+ *  @property unique */
+arrayFn('unique', function() {
+	// noinspection CommaExpressionJS
+	return this.reduce((a,k) => (a.has(k) || a.push(k), a), []);
+});
+
+/** @class Array
+ *  @property sum */
+arrayGetter('sum', function() {
+	return this.reduce((p,c) => p+c, 0);
+});
+
+/** @class Array
+ *  @property avg */
+arrayGetter('avg', function() {
+	return this.length > 0 ? this.reduce((p,c) => p+c, 0) / this.length : 0;
+});

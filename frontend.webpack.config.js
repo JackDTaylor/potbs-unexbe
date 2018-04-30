@@ -10,6 +10,11 @@ const webpackSharedConfig = require("./utils/webpack-shared-config");
 module.exports = {
 	...webpackSharedConfig,
 
+	externals: {
+		...webpackSharedConfig.externals,
+		'bluebird': 'Bluebird',
+	},
+
 	entry: `${baseDir}/frontend.jsx`,
 
 	output: {
@@ -18,12 +23,8 @@ module.exports = {
 		path: baseDir + '/public/assets/compiled',
 		publicPath: '/assets/compiled/',
 	},
+	// devtool: 'source-map',
 
-	externals: {
-		'react': 'React',
-		'react-dom': 'ReactDOM',
-		'material-ui': 'MaterialUI',
-	},
 	plugins: [
 		new CleanWebpackPlugin([baseDir + '/public/assets/compiled'], {
 			watch: false,
@@ -37,8 +38,16 @@ module.exports = {
 		new webpack.HashedModuleIdsPlugin(),
 		new webpack.optimize.CommonsChunkPlugin({
 			name:'manifest'
-		})
+		}),
+		// [size -= 400kb][time *= 1.75]
+		// new webpack.optimize.UglifyJsPlugin({
+		// 	sourceMap: true,
+		// 	mangle: { keep_fnames: true },
+		// })
+
+		...webpackSharedConfig.plugins,
 	],
+
 	module: {
 		loaders: [{
 			test: /.jsx?$/,
@@ -58,7 +67,8 @@ module.exports = {
 					"babel-plugin-transform-object-rest-spread",
 					"babel-plugin-syntax-async-functions",
 					"babel-plugin-dynamic-import-webpack",
-					"babel-plugin-transform-regenerator"
+					"babel-plugin-transform-regenerator",
+					"babel-plugin-transform-async-to-bluebird"
 				]
 			}
 		}]

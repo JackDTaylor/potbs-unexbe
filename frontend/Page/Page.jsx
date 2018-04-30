@@ -1,8 +1,6 @@
 import Loader from "../Common/Loader";
 
 export default class Page extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'Page'] };
-
 	@prop params;
 
 	contents = null;

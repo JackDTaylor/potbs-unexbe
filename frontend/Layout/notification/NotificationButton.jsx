@@ -2,8 +2,6 @@ import IconButton from "../../Common/IconButton";
 import {Badge} from "material-ui";
 
 export default class NotificationButton extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'NotificationButton'] };
-
 	get additionalClasses() {
 		return [
 			...super.additionalClasses,

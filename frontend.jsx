@@ -1,23 +1,28 @@
-import Frontend from "./frontend/Application/Frontend";
-
-global = window;
-
 import "./frontend/utils";
-import sharedUtils from "./common/utils";
-sharedUtils(window);
 
 import {CssBaseline} from "material-ui";
 import FrontendAppController from "./frontend/AppController";
 import FrontendAPI from "./frontend/Application/FrontendAPI";
 
 (async function() {
-	global.AppController = new FrontendAppController(Frontend);
+	console.verbose('Loading renderers...');
+
+	await LoadRenderers();
+
+	console.verbose('Preparing...');
+
+
+	global.AppController = new FrontendAppController();
 	global.API = FrontendAPI;
 
 	await AppController.prepare();
 
+	console.verbose('Rendering...');
+
 	let layout = await AppController.renderLayout();
 	let content = await AppController.renderContent();
+
+	console.verbose('Mounting...');
 
 	ReactDOM.render((
 		<Theme>
@@ -33,5 +38,9 @@ import FrontendAPI from "./frontend/Application/FrontendAPI";
 		</Theme>
 	), document.getElementById('contentWrapper'));
 
+	console.verbose('Initializing...');
+
 	await AppController.initialize();
+
+	console.log(`Ready in ${Date.now() - StartTime}ms`);
 })();

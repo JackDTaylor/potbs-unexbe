@@ -1,5 +1,4 @@
 import CSV from "./CSV";
-import {APPROOT} from "../config";
 
 const csvAdapter = new CSV({headers: ['key', 'value']});
 
@@ -16,7 +15,7 @@ export default class Lang {
 	static async load(lang) {
 		lang = lang.replace(/[^a-z0-9]/g, '');
 
-		const langFile = `${APPROOT}/language/lang-${lang}.csv`;
+		const langFile = Application.path(`/language/lang-${lang}.csv`);
 		const rawDb = await csvAdapter.read(langFile);
 
 		this.db = this.db || {};
@@ -26,7 +25,7 @@ export default class Lang {
 	}
 
 	static async save(lang) {
-		const langFile = `${APPROOT}/language/lang-${lang}.csv`;
+		const langFile = Application.path(`/language/lang-${lang}.csv`);
 		const rows = Object.keys(this.db[lang]).map(key => ({key, value: this.db[key] }));
 		await csvAdapter.write(langFile, rows);
 	}

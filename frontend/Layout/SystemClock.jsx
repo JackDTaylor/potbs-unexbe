@@ -1,8 +1,6 @@
 import {Typography} from "material-ui";
 
 export default class SystemClock extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'SystemClock'] };
-
 	clockInterval = null;
 
 	componentDidMount() {
@@ -15,15 +13,15 @@ export default class SystemClock extends ReactComponent {
 
 
 	get hours() {
-		return dateFormat('H');
+		return Date.current.format('H');
 	}
 
 	get minutes() {
-		return dateFormat('i');
+		return Date.current.format('i');
 	}
 
 	get dayOfWeek() {
-		return dateFormat('l, j F');
+		return Date.current.format('l, j F');
 	}
 
 	render() {

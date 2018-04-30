@@ -1,3 +1,6 @@
+global.IsBackend = true;
+global.IsFrontend = false;
+
 import "./backend/utils";
 
 import Express from 'express';
@@ -5,7 +8,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'client-sessions';
 import fileUpload from 'express-fileupload';
-import {SESSION_KEY, SESSION_SECRET} from "./backend/config";
+import {SERVER_PORT, SESSION_KEY, SESSION_SECRET} from "./backend/config";
 import Application from "./backend/core/Application";
 
 global.APP_START_TIME = Date.now();
@@ -38,13 +41,28 @@ global.APP_START_TIME = Date.now();
 
 		console.warn('Started in', Date.now() - APP_START_TIME, 'ms');
 
-		app.all('*', resolveHandler).listen(3000);
+		app.all('*', resolveHandler).listen(SERVER_PORT);
 	} catch(e) {
-		if(e.message !== 'dpr') {
+		let dprMode = true;
+
+		if(e instanceof FlowInterrupter == false) {
+			dprMode = false;
+
 			console.original(e);
 			console.error(e);
 		}
 
-		process.exit(1);
+		// Launch emergency server
+		Express().all('*', function(req, res) {
+			if(dprMode && isDeveloper(req) && isAjax(req) == false) {
+				res.set({'Content-Type': 'text/plain'});
+				res.send('[EMERGENCY MODE]\n' + e.payload);
+			}
+
+			Application.HandleError(req, res, e);
+		}).listen(SERVER_PORT);
+
+		//
+		// process.exit(1);
 	}
 })();

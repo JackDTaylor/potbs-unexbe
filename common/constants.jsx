@@ -1,3 +1,5 @@
+global.ID = 'id';
+
 // Not in decorators.jsx because constants are included before everything
 global.markedAs = function(mark, container = false) {
 	return function(proto, field, descriptor) {
@@ -14,6 +16,25 @@ global.markedAs = function(mark, container = false) {
 	}
 };
 
+global.nonEnumerable = function(proto, field, descriptor) {
+	descriptor.enumerable = false;
+	return descriptor;
+};
+
+global.Enum = class {
+	@nonEnumerable static Name(code) {
+		return Object.keys(this).filter(k => this[k] == code)[0] || '__UNKNOWN__';
+	}
+
+	@nonEnumerable static get Keys() {
+		return Object.keys(this);
+	}
+
+	@nonEnumerable static get Values() {
+		return Object.values(this);
+	}
+};
+
 const MICROSECOND = 1;
 const SECOND      = 1000 * MICROSECOND;
 const MINUTE      = 60   * SECOND;
@@ -22,8 +43,7 @@ const DAY         = 24   * HOUR;
 const WEEK        = 7    * DAY;
 const YEAR        = 365  * DAY;
 
-
-global.Time = class {
+global.Time = class extends Enum {
 	static MICROSECOND = MICROSECOND;
 	static SECOND      = SECOND;
 	static MINUTE      = MINUTE;
@@ -33,7 +53,7 @@ global.Time = class {
 	static YEAR        = YEAR;
 };
 
-global.TimeSecond = class {
+global.TimeSecond = class extends Enum {
 	static MICROSECOND = MICROSECOND / SECOND;
 	static SECOND      = SECOND      / SECOND;
 	static MINUTE      = MINUTE      / SECOND;
@@ -43,17 +63,29 @@ global.TimeSecond = class {
 	static YEAR        = YEAR        / SECOND;
 };
 
+global.DayOfWeek = class extends Enum {
+	static MON = 0;
+	static TUE = 1;
+	static WED = 2;
+	static THU = 3;
+	static FRI = 4;
+	static SAT = 5;
+	static SUN = 6;
+};
+
+
+
 const KB          = 1024;
 const MB          = 1024 * KB;
 const GB          = 1024 * MB;
 
-global.FileSize = class {
+global.FileSize = class extends Enum {
 	static KB = KB;
 	static MB = MB;
 	static GB = GB;
 };
 
-global.RequestType = class {
+global.RequestType = class extends Enum {
 	static POST   = 'POST';
 	static GET    = 'GET';
 	static PUT    = 'PUT';
@@ -65,7 +97,7 @@ const read     = markedAs('Readable', ScopeMarks);
 const write    = markedAs('Writable', ScopeMarks);
 const reserved = markedAs('Reserved', ScopeMarks);
 
-global.Scope = class {
+global.Scope = class extends Enum {
 	static ALL   = 0xFFFFF;
 	static NONE  = 0x00000;
 
@@ -75,8 +107,8 @@ global.Scope = class {
 
 	// By page
 	@read  static LIST  = 2 ** 2;
-	@read  static FORM  = 2 ** 3;
-	@write static VIEW  = 2 ** 4;
+	@write static FORM  = 2 ** 3;
+	@read  static VIEW  = 2 ** 4;
 
 	// Reserved
 	@reserved static U005  = 2 ** 5;
@@ -95,54 +127,81 @@ global.Scope = class {
 	@reserved static U018  = 2 ** 18;
 	@reserved static U019  = 2 ** 19;
 
-	static get Readable() {
+	@nonEnumerable static get Readable() {
 		return ScopeMarks.Readable.reduce((p,c) => p|Scope[c], 0);
 	}
 
-	static get Writable() {
+	@nonEnumerable static get Writable() {
 		return ScopeMarks.Writable.reduce((p,c) => p|Scope[c], 0);
+	}
+
+	@nonEnumerable static parse(scope) {
+		return Object.keys(this)
+			.filter(key => key != 'ALL')
+			.map(key => (this[key] & scope) ? key : false)
+			.filter(x => x)
+			.join(' | ');
 	}
 };
 
-global.Type = class {
-	// Custom types
-	static PRICE  = 'PRICE';
-
+global.Type = class extends Enum {
 	// SQL Types
-	static DECIMAL   = 'DECIMAL';
 	static STRING    = 'STRING';
-	static CHAR      = 'CHAR';
-	static TEXT      = 'TEXT';
 	static NUMBER    = 'NUMBER';
-	static INTEGER   = 'INTEGER';
-	static TINYINT   = 'TINYINT';
-	static SMALLINT  = 'SMALLINT';
-	static MEDIUMINT = 'MEDIUMINT';
-	static BIGINT    = 'BIGINT';
-	static FLOAT     = 'FLOAT';
-	static REAL      = 'REAL';
-	static DOUBLE    = 'DOUBLE PRECISION';
-	static BOOLEAN   = 'BOOLEAN';
-	static TIME      = 'TIME';
 	static DATE      = 'DATE';
-	static DATEONLY  = 'DATEONLY';
-	static HSTORE    = 'HSTORE';
-	static JSON      = 'JSON';
-	static JSONB     = 'JSONB';
-	static NOW       = 'NOW';
-	static BLOB      = 'BLOB';
-	static RANGE     = 'RANGE';
-	static UUID      = 'UUID';
-	static UUIDV1    = 'UUIDV1';
-	static UUIDV4    = 'UUIDV4';
-	static VIRTUAL   = 'VIRTUAL';
-	static ENUM      = 'ENUM';
 	static ARRAY     = 'ARRAY';
-	static GEOMETRY  = 'GEOMETRY';
-	static GEOGRAPHY = 'GEOGRAPHY';
+	static OBJECT    = 'OBJECT';
 };
 
-global.Link = class {
+global.Link = class extends Enum {
 	static O2M = 'O2M';
+	static M2O = 'M2O';
 	static M2M = 'M2M';
+};
+
+global.ConstraintAction = class extends Enum {
+	static NO_ACTION   = 'NO ACTION';
+	static CASCADE     = 'CASCADE';
+	static RESTRICT    = 'RESTRICT';
+	static SET_NULL    = 'SET NULL';
+	static SET_DEFAULT = 'SET DEFAULT';
+};
+
+
+global.Order = class extends Enum {
+	static ASC  = 'asc';
+	static DESC = 'desc';
+};
+
+// noinspection CommaExpressionJS
+const descs = {}, desc = (desc) => (p,f,d) => (descs[f] = desc, d);
+
+global.ErrorCode = class extends Enum {
+	@desc('Page not found')
+	static NOT_FOUND = 404;
+
+	@desc('Internal error occured')
+	static INTERNAL = 500;
+
+	@desc('Internal error occured')
+	static E_INTERNAL = 550;
+
+	@desc('Fatal error occured!')
+	static E_FATAL = 551;
+
+	@nonEnumerable static Description(code) {
+		return descs[ ErrorCode.Name(code) ] || 'Error occured';
+	}
+
+	@nonEnumerable static Format(code, message = null) {
+		const codeName = ErrorCode.Name(code);
+		const description = message || ErrorCode.Description(code);
+
+		return `${codeName}: ${description}`;
+	}
+};
+
+global.ModelMeta = class extends Enum {
+	static GRID_CONFIG = 'gridConfig';
+	static FORM_CONFIG = 'formConfig';
 };

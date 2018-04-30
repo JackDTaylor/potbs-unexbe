@@ -29,10 +29,10 @@ export default class ACL {
 	}
 
 	async initialize() {
-		const User = await Application.GetModel("Acl/User");
+		const User = await GetModel("Acl/User");
 
 		if(this.storedSession.authUserId) {
-			this.user = await User.findById(this.storedSession.authUserId);
+			this.user = {};//await User.findById(this.storedSession.authUserId);
 		}
 	}
 }

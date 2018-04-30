@@ -1,13 +1,17 @@
 // Only DB-independent imports are allowed
 import {APPROOT} from "../config";
-import Mysql from "./Mysql";
 import errorPageTemplate from "./../views/error";
+
+import Mysql from "./Mysql";
 import SessionStorage from "./SessionStorage";
-import {ModelFiles} from "../models";
 import Lang from "./Lang";
+import Version from "./Version";
+import RendererChecker from "./Renderers/RendererChecker";
+
+global.Version = Version;
 
 let Context = null;
-let contextIdCounter = 1;
+let contextIdCounter = 0;
 
 let instance = null;
 
@@ -17,6 +21,11 @@ export default class Application {
 	}
 
 	dpr(dprResponse) {
+		if(contextIdCounter < 1) {
+			// Application haven't been initialized yet
+			throw new FlowInterrupter(dprResponse);
+		}
+
 		Object.values(this.activeContexts).forEach(ctx => ctx.sendDprResponse(dprResponse));
 	}
 
@@ -27,39 +36,28 @@ export default class Application {
 		return Object.keys(this.activeContexts);
 	}
 
-	static async GetModel(modelName, rawMode = false) {
-		modelName = modelName.replace(/[^a-zA-Z0-9/]/g, '');
+	static basePath = APPROOT;
 
-		if(ModelFiles.has(`/${modelName}.jsx`) === false) {
-			throw new Error(`Model '${modelName}' not found`);
-		}
-
-		let Model = (await import('../../models/' + modelName)).default;
-
-		if(rawMode) {
-			return Model;
-		}
-
-		Model.Backend.Code = modelName;
-		Model.Backend.Name = Model.Name;
-
-		return Model.Backend;
-	}
-
-	basePath = APPROOT;
-
-	path(...subPaths) {
+	static path(...subPaths) {
 		subPaths = subPaths.join('/');
 
 		return this.basePath + subPaths;
 	}
 
+	/**
+	 * Initializes the server
+	 * @return {Promise.<void>}
+	 */
 	async initialize() {
-		await Promise.all([
+		await Lang.load('ru');
+
+		await Bluebird.all([
+			RendererChecker.Check('Cell'),
+			RendererChecker.Check('Field'),
+			RendererChecker.Check('Detail'),
 			Mysql.Initialize(),
 			SessionStorage.Instance.initialize(),
-			Lang.load('ru'),
-	]);
+		]);
 
 		// Dynamic import because Context can use models from DB
 		Context = require("./Context").default;
@@ -88,15 +86,7 @@ export default class Application {
 				response.send('[empty response]');
 			}
 		} catch(error) {
-			if(error && error.isFlowInterrupter && response.headersSent) {
-				return;
-			}
-
-			console.error("###### Error occured ########");
-			console.error(error);
-			console.error("################### ##########");
-
-			response.send(errorPageTemplate({ error }));
+			Application.HandleError(request, response, error)
 		} finally {
 			if(context && context.id) {
 				this.unregisterContext(context.id);
@@ -104,6 +94,36 @@ export default class Application {
 		}
 	}
 
+	/**
+	 * Handles an error (no matter if application has been initialized or not)
+	 * @param request
+	 * @param response
+	 * @param error
+	 * @constructor
+	 */
+	static HandleError(request, response, error) {
+		if(error && error.isFlowInterrupter && response.headersSent) {
+			return;
+		}
+
+		if(isAjax(request)) {
+			return response.status(551).send({
+				v: Version.Sync().primary,
+				error: 551,
+				errorMessage: error.message,
+			});
+		}
+
+		console.error("###### Error occured ########");
+		console.error(error);
+		console.error("#############################");
+
+		return response.send(errorPageTemplate({ error, devMode: isDeveloper(request) }));
+	}
+
+	/**
+	 * Shuts down the server
+	 */
 	exit() {
 		console.clear();
 		console.warn('Shutting down the server');
@@ -118,7 +138,7 @@ export default class Application {
 	}
 
 	registerContext(context) {
-		const id = contextIdCounter++;
+		const id = ++contextIdCounter;
 		this.activeContexts[id] = context;
 		return id;
 	}
@@ -129,3 +149,5 @@ export default class Application {
 		}
 	}
 }
+
+global.Application = Application;

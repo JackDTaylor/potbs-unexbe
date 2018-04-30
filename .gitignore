@@ -48,3 +48,4 @@ typings/
 *.tgz
 .yarn-integrity
 .env
+utils/.backup/

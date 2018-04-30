@@ -5,6 +5,8 @@ const webpack = require(`webpack`);
 module.exports = {
 	...webpackSharedConfig,
 
+	externals: {},
+
 	entry: `${baseDir}/vendor.jsx`,
 	devtool: 'sourcemap',
 	output: {

@@ -17,7 +17,7 @@ const HideButton = props => (
 
 
 export default class NotificationPanel extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'NotificationPanel', 'DrawerContents'] };
+	static CssClasses = ['NotificationPanel', 'DrawerContents'];
 
 	render() {
 		return (

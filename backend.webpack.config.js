@@ -35,6 +35,8 @@ module.exports = {
 	plugins: [
 		new RestartOnCompile(),
 		new WatchExternalFilesPlugin({files: [baseDir + '/language/lang-*.csv']}),
+
+		...webpackSharedConfig.plugins,
 	],
 	module: {
 		loaders: [{
@@ -54,7 +56,8 @@ module.exports = {
 					"babel-plugin-transform-object-rest-spread",
 					"babel-plugin-syntax-async-functions",
 					"babel-plugin-dynamic-import-webpack",
-					"babel-plugin-transform-regenerator"
+					"babel-plugin-transform-regenerator",
+					"babel-plugin-transform-async-to-bluebird"
 				]
 			}
 		}]

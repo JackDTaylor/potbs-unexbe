@@ -1,10 +1,36 @@
 import SystemLayout from "./Layout/SystemLayout";
 import Endpoint from "./Application/Endpoint/Endpoint";
 import ContentWrapper from "./Common/ContentWrapper";
-import EndpointBundle from "./Application/Endpoint/EndpointBundle";
-import routes from "./routes";
+import registeredRoutes from "./routes";
 
 const URL = window.URL;
+
+let activeContext = null;
+async function lockContext(url, fn) {
+	let isInitiator = false;
+
+	if(activeContext == null) {
+		isInitiator = true;
+		activeContext = {};
+	}
+
+	activeContext.url = url;
+
+	let res = await fn();
+	if(res) {
+		console.log('setting push to true', res);
+		activeContext.isPush = true;
+	}
+
+	if(isInitiator) {
+		console.log(activeContext);
+		AppController.changeHistoryState(activeContext.url, activeContext.isPush);
+
+		activeContext = null;
+	}
+}
+
+// TODO: Hotkeys
 
 export default class FrontendAppController {
 	page = null;
@@ -14,19 +40,17 @@ export default class FrontendAppController {
 
 	errorEndpoint = new Endpoint('ErrorPage');
 
-	rootEndpoint = routes();
-
 	navigation = [
-		{url: '/acl/user',                  icon: 'person', title: 'Пользователи'},
-		{url: '/craft/resource',            icon: 'stars', title: 'Ресурсы'},
-		{url: '/craft/resource-ingredient', icon: 'share', title: 'Ингредиенты'},
+		{url: '/acl/user',                  icon: 'person',   title: 'Пользователи'},
+		{url: '/craft/resource',            icon: 'stars',    title: 'Ресурсы'},
+		{url: '/craft/resource-ingredient', icon: 'share',    title: 'Ингредиенты'},
 		{url: '/craft/factory',             icon: 'industry', title: 'Постройки'},
 		{url: '/craft/project',             icon: 'project',  title: 'Проекты'},
 
 		{url: '/settings',                  icon: 'settings', title: 'Настройки' },
 	];
 
-	constructor(Frontend) {}
+	constructor() {}
 
 	async prepare() {
 		// const config = await API.fetch(RequestType.GET, 'frontend');
@@ -37,28 +61,16 @@ export default class FrontendAppController {
 	async initialize() {
 		window.onpopstate = ev => this.route(location.href);
 
-		try {
-			console.warn('Initializing to', location.href);
-
-			let context = { url: location.href, method: 'replace' };
-			let data = await this.route(location.href, context);
-
-			if(location.href != context.url) {
-				this.changeHistoryState(context, data);
-			}
-		} catch(error) {
-			console.error(error);
-
-		}
+		await this.route(location.href);
 	}
 
-	changeHistoryState(context, data) {
-		console.log('History state', context.method.toUpperCase(), context.url);
+	changeHistoryState(url, push = false) {
+		console.log('History state', url, push);
 
-		if(context.method == 'replace') {
-			history.replaceState(/*data || */{}, this.pageTitle, context.url);
+		if(push == false) {
+			history.replaceState({}, this.pageTitle, url);
 		} else {
-			history.pushState(/*data || */{}, this.pageTitle, context.url);
+			history.pushState({}, this.pageTitle, url);
 		}
 	}
 
@@ -77,76 +89,55 @@ export default class FrontendAppController {
 		return await endpoint.execute(params);
 	}
 
-	async route(url, context) {
+	async route(url) {
 		const parsedUrl = URL.parse(url);
 		const originalPath = parsedUrl.pathname;
-
-		let cleanPath = parsedUrl.pathname
-			.replace(/\/+/g, '/') // No multislashes
-			.replace(/\/+$/, '')  // No trailing slashes
-		;
-
-		if(cleanPath == '') {
-			cleanPath = '/';
-		}
+		const cleanPath = URL.clean(originalPath);
 
 		if(cleanPath != originalPath) {
-			return await this.redirect(cleanPath, context);
+			return await this.redirect(cleanPath);
 		}
 
-		let params = {context, subroute:cleanPath};
-		let endpoint = this.rootEndpoint;
+		let endpoint = null;
+		let params = {};
 
-		while(endpoint instanceof EndpointBundle) {
-			endpoint = await endpoint.route(params.subroute, params);
-		}
+		registeredRoutes.some(route => {
+			const match = route.regex.exec(cleanPath);
 
-		if(endpoint instanceof Endpoint == false && endpoint != false) {
-			console.log(endpoint);
-			throw new Error('Routing result resolved to unknown type');
-		}
+			if(match) {
+				endpoint = route.endpoint;
+				params = Object.combine(route.paramNames, match.slice(1));
 
-		if(endpoint == false || params.subroute) {
+				console.warn('Routed as', route.url, params);
+				return true;
+			}
+		});
+
+		if(endpoint == null) {
 			return await this.routeError(404);
 		}
 
 		return await this.routeEndpoint(endpoint, params);
 	}
 
-	async redirect(url, context = null) {
-		console.warn('Redirecting to', url);
+	async redirect(url) {
+		await lockContext(url, async() => {
+			console.warn('Redirecting to', url);
 
-		let isInitiator = (context == null);
+			await this.route(url);
 
-		context = context || { url, method: 'replace' };
-		context.url = url;
-
-		let data = await this.route(url, context);
-
-		if(isInitiator) {
-			console.log('history.replaceState', context, url);
-			this.changeHistoryState(context, data);
-		}
-
-		return data;
+			return false;
+		});
 	}
 
-	async navigate(url, context = null) {
-		console.warn('Navigating to', url);
+	async navigate(url) {
+		await lockContext(url, async() => {
+			console.warn('Navigating to', url);
 
-		let isInitiator = context == null;
+			await this.route(url);
 
-		context = context || { url, method: 'push' };
-		context.url = url;
-		context.method = 'push';
-
-		let data = await this.route(url, context);
-
-		if(isInitiator) {
-			this.changeHistoryState(context, data);
-		}
-
-		return data;
+			return true;
+		});
 	}
 
 	get pageTitle() {

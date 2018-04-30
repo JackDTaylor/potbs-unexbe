@@ -2,7 +2,7 @@ import {List, Divider} from "material-ui";
 import NavItem from "./NavItem";
 
 export default class NavPanel extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'NavPanel', 'DrawerContents'] };
+	static CssClasses = ['NavPanel', 'DrawerContents'];
 
 	render() {
 		const settingsUrl = '/settings';

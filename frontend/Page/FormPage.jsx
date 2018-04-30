@@ -1,13 +1,11 @@
 import Page from "./Page";
 
 export default class FormPage extends Page {
-	get cssClass() { return [...super.cssClass, 'FormPage'] };
-
 	fields;
 	defaults;
 
-	get proxy() {
-		return this.params.proxy;
+	get formProvider() {
+		return this.params.formProvider;
 	}
 
 	get pageTitle() {
@@ -19,8 +17,8 @@ export default class FormPage extends Page {
 	}
 
 	async preparePage() {
-		this.fields = await this.proxy.fetchFields();
-		this.defaults = await this.getDefaults();
+		// this.fields = await this.formProvider.fetchFields();
+		// this.defaults = await this.getDefaults();
 
 		return await super.preparePage();
 	}

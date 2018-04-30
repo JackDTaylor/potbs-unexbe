@@ -1,4 +1,5 @@
 global.Random = class Random {
+
 	/**
 	 * Random value from 0 to 1
 	 * @return {number}
@@ -8,17 +9,48 @@ global.Random = class Random {
 	}
 
 	/**
+	 * Random string with length of 8
+	 * @return {number}
+	 */
+	static get key() {
+		return Math.random();
+	}
+
+	static get char() {
+		return Random.String(1);
+	}
+
+	/**
+	 * Capacity: ~10MB/sec
+	 * @param len
+	 * @return {*}
+	 */
+	static String(len = 8) {
+		if(len <= 0) {
+			return '';
+		}
+
+		let buffer = "";
+
+		while(len > 10) {
+			buffer += Random.String(10);
+			len -= 10;
+		}
+
+		return buffer + Random.RangeInt(36 ** (len - 1), 36 ** len).toString(36);
+	}
+	/**
 	 * Returns random float between min and max
 	 * @param min Minimal value, inclusive
 	 * @param max Maximal value, inclusive
 	 */
 	static Range(min, max) {
-		if(typeof max == "undefined") {
+		if(isUndefined(max)) {
 			max = min;
 			min = 0;
 		}
 
-		return min + Random.value * max;
+		return min + Random.value * (max - min);
 	}
 
 	/**

@@ -2,7 +2,7 @@ export default class Endpoint {
 	component;
 	data;
 
-	constructor(component, data = {}) {
+	constructor(component = 'ErrorPage', data = {}) {
 		this.component = component;
 		this.data = data;
 	}
@@ -15,6 +15,6 @@ export default class Endpoint {
 
 		await AppController.content.mount(data.component, data.params);
 
-		return data;
+		return {};
 	}
 }

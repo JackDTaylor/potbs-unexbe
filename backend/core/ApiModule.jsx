@@ -32,6 +32,12 @@ export default class ApiModule {
 	/** @type {ApiController}*/
 	controller = null;
 
+	/**
+	 * Meta will be attached to response adjacent to `result`
+	 * @type {Object}
+	 */
+	responseMeta = {};
+
 	constructor(controller) {
 		this.controller = controller;
 	}
@@ -54,7 +60,7 @@ export default class ApiModule {
 		method = `${method}Endpoint`;
 
 		if(this[method] instanceof Function === false) {
-			this.errorResponse(500, "Not implemented");
+			this.errorResponse(ErrorCode.NOT_IMPLEMENTED, "Not implemented");
 		}
 
 		return await this[method]();

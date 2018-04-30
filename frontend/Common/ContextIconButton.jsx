@@ -3,8 +3,6 @@ import {MenuItem} from "material-ui";
 import IconButton from "./IconButton";
 
 export default class ContextIconButton extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'ContextIconButton'] };
-
 	@state open = false;
 	@state anchor;
 

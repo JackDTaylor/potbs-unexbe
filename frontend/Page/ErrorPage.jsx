@@ -1,18 +1,17 @@
 import Header from "../Common/Typography/Header";
 import Text from "../Common/Typography/Text";
 import Page from "./Page";
+import Link from "../Common/Link";
 
 const errors = {
 	404: {
 		title: 'Страница не найдена',
-		message: <span>Запрошенная вами страница не найдена. <a href="/">Вернуться на главную</a></span>
+		message: <span>Запрошенная вами страница не найдена. <Link href="/">Вернуться на главную</Link></span>
 	},
 
 };
 
 export default class ErrorPage extends Page {
-	get cssClass() { return [...super.cssClass, 'ErrorPage'] };
-
 	get error() {
 		if(this.params.error && this.params.error.code && this.params.error.message) {
 			return {
@@ -30,6 +29,10 @@ export default class ErrorPage extends Page {
 		}
 
 		return 'Произошла ошибка!';
+	}
+
+	get pageTitle() {
+		return 'Ошибка';
 	}
 
 	get errorMessage() {

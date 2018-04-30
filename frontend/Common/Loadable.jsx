@@ -1,8 +1,6 @@
 import Loader from "./Loader";
 
 export default class Loadable extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'Loadable'] };
-
 	@prop c;
 	@prop cRef;
 

@@ -3,8 +3,6 @@ import {ListItemIcon} from "material-ui";
 import {ListItemText} from "material-ui";
 
 export default class NavItem extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'NavItem'] };
-
 	render() {
 		const {item, onClick} = this.props;
 

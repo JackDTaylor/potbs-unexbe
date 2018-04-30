@@ -9,6 +9,8 @@ export default class Redirect extends Endpoint {
 	}
 
 	async execute(params = {}) {
-		return await AppController.redirect(this.redirectUrl, params.context || null);
+		await delay(25); // For cyclic redirects
+
+		return await AppController.redirect(URL.withParams(this.redirectUrl, params));
 	}
 }

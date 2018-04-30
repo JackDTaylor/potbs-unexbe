@@ -1,25 +1,32 @@
-@modelName('ресурс')
+@named('ресурс')
+@registerBundle('/craft/resource')
+export default class CraftResource extends PlatformSpecificModel {
+	@scoped(Scope.NONE)
+	@property usage_ingredients;
 
-export default class CraftResource extends BaseModel {
-	// @hidden @property static usage_ingredients;
-	@property static usages = {
-		expr: '0',
-		get() {
-			return [1,2,3];
+	@property usages = {
+		async get() {
+			return await this.usage_ingredients.map(usage => usage.resource);
 		}
 	};
 
-	@scope(Scope.VIEW)
-	@property static bulk_craft_cost = {
+	@cellRenderer(CellRenderers.LineArrayCell)
+	@property ingredients;
+
+
+	// @scoped(Scope.VIEW)
+	@property bulk_craft_cost = {
 		expr: `256 / buy_cost`,
-		type: Type.TIME,
+		type: PropertyType.PRICE(19, 2),
 	};
 
-	@scope(Scope.VIEW)
-	@property static craft_cost;
 
-	@scope(Scope.VIEW)
-	@property static buy_cost;
+	// @scoped(Scope.VIEW)
+	@property craft_cost;
 
-	commonProp = 256;
+
+	// @scoped(Scope.VIEW)
+	@property buy_cost = {
+		type: PropertyType.PRICE(19, 2),
+	};
 }

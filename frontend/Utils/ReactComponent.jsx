@@ -25,10 +25,50 @@ const classToClassname = function(cls, isComponent = true) {
 const rawClassname       = cls => classToClassname(cls, false);
 const componentClassname = cls => classToClassname(cls, true);
 
+class ErrorBoundary extends React.Component {
+	@state hasError = false;
+	@state error = null;
+
+	componentDidCatch(error, info) {
+		this.error = error;
+		// console.error(info);
+	}
+
+	render() {
+		if(this.error) {
+			return <b title={this.error}>[Error]</b>;
+		}
+
+		return this.props.children;
+	}
+}
+
+
 class ReactComponent extends React.Component {
 
 	/** @type String[] */
-	get cssClass() { return [] };
+	get cssClass() {
+		let obj = this.constructor.prototype;
+		let names = [];
+
+		while(obj) {
+			let classes = [obj.constructor.name];
+
+			if(Object.getOwnPropertyNames(obj.constructor).has('CssClasses')) {
+				classes = obj.constructor.CssClasses;
+			}
+
+			names = names.concat(classes);
+
+			obj = Object.getPrototypeOf(obj);
+
+			if(!obj.constructor || !obj.constructor.name || obj.constructor == ReactComponent) {
+				break;
+			}
+		}
+
+		return names;
+	};
 
 	/** @type String[] */
 	get additionalClasses() { return []; }
@@ -58,7 +98,7 @@ class ReactComponent extends React.Component {
 	componentWillMount() {}                  // noinspection JSDuplicatedDeclaration
 	componentDidMount() {}                   // noinspection JSDuplicatedDeclaration
 	componentWillReceiveProps(){}            // noinspection JSDuplicatedDeclaration
-	shouldComponentUpdate() { return true; } // noinspection JSDuplicatedDeclaration
+	// shouldComponentUpdate() { return true; } // noinspection JSDuplicatedDeclaration
 	componentWillUpdate() {}                 // noinspection JSDuplicatedDeclaration
 	componentDidUpdate() {}                  // noinspection JSDuplicatedDeclaration
 	componentWillUnmount() {}
@@ -75,4 +115,5 @@ class ReactComponent extends React.Component {
 	}
 }
 
+window.ErrorBoundary = ErrorBoundary;
 window.ReactComponent = ReactComponent;

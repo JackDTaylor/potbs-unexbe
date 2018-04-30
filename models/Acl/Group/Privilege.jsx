@@ -1,2 +1,3 @@
-export default class AclGroupPrivilege extends BaseModel {
+@registerBundle('/craft/project')
+export default class AclGroupPrivilege extends PlatformSpecificModel {
 }

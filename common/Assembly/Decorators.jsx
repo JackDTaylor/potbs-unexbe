@@ -16,14 +16,17 @@ global._decoratorUtils = {
 
 		fn(value, ...params);
 
-		return {value};
+		return { value, configurable: true };
 	},
+
 	valueDecorator(fn) {
 		return (p, f, d) => _decoratorUtils.processValue(d, fn, [p,f,d]);
 	}
 };
 
 const utils = _decoratorUtils;
+
+global.defineKey = (k, v) => utils.valueDecorator(value => utils.defineKey(k, value, v));
 
 global.observable = function observable() {
 	const handlers = [];
@@ -42,14 +45,46 @@ global.observable = function observable() {
 	};
 
 	return {
-		value: observableFn
+		value: observableFn,
+		configurable: true,
 	};
+};
+
+global.cached = function(proto, field, descriptor) {
+	const key = `${field}$cachedResult`;
+	const getter = utils.decoratedValue(descriptor, ()=>{});
+
+	return {
+		async value() {
+			if(!this[key]) {
+				this[key] = await getter.apply(this, arguments);
+			}
+
+			return this[key];
+		}
+	}
+};
+
+global.cachedGet = function(proto, field, descriptor) {
+	const key = `${field}$cachedResult`;
+	const getter = descriptor.get;
+
+	return {
+		async get() {
+			if(!this[key]) {
+				this[key] = await getter.apply(this, arguments);
+			}
+
+			return this[key];
+		}
+	}
 };
 
 global.asyncCatch = function(proto, field, descriptor) {
 	let original = utils.decoratedValue(descriptor, ()=>{});
 
 	return {
+		configurable: true,
 		value: async function() {
 			try {
 				return await original.apply(this, arguments);
@@ -61,92 +96,12 @@ global.asyncCatch = function(proto, field, descriptor) {
 	};
 };
 
-global.abstract = function(proto, field, desc) {
-	console.log(proto);
-	if(valueType(proto) !== Function) {
-		proto = proto.constructor;
-	}
-
-	proto = proto || Object;
-
-	return {
-		get() {
-			throw new Error(`${proto.name}::${field} is marked as abstract and should be overriden`);
-		}
-	};
+global.named = (...names) => Cls => {
+	Cls.Name = new Noun(...names);
+	return Cls;
 };
 
-global.modelName = function(...args) {
-	return function(Cls) {
-		Cls.Name = new Noun(...args);
-		return Cls;
-	}
-};
-
-global.exclude = (name) => utils.valueDecorator(value => {
-	utils.defineKey('exclude', value, []);
-
-	value.exclude.push(name);
-});
-
-global.include = (name, params = {}) => utils.valueDecorator(value => {
-	utils.defineKey('include', value, []);
-
-	value.include.push({ name: name, type: Type.STRING, ...params });
-});
-
-global.extend = (name, params = {}) => utils.valueDecorator(value => {
-	utils.defineKey('extend', value, {});
-
-	value.extend[name] = params;
-});
-
-global.arrange = (...displayGroups) => utils.valueDecorator(value => {
-	utils.defineKey('arrange', value, displayGroups);
-});
-
-global.hidden = utils.valueDecorator(value => {
-	utils.defineKey('hidden', value, true);
-});
-
-global.scope = (scope) => utils.valueDecorator(value => {
-	utils.defineKey('scope', value, scope);
-});
-
-global.property = function(proto, field, descriptor) {
-	let value = utils.decoratedValue(descriptor, {});
-
-	if(valueType(value) !== Object) {
-		value = { expr: value };
-	}
-
-	value.expr = value.expr || null;
-
-	if(value.set === false) {
-		value.set = fn => console.error(`'${field}' property is readonly`);
-	}
-
-	let getter = value.get || (value.expr ? function() { return this.getDataValue(field); } : null);
-	let setter = value.set || (value.expr ? function(val) { this.setDataValue(field, val); } : null);
-
-	if(getter) {
-		value.get = function() {
-			return getter.apply(this, [this.getDataValue(field), ...arguments]);
-		};
-	} else {
-		delete value.get;
-	}
-
-	if(setter) {
-		value.set = function() {
-			return setter.apply(this, arguments);
-		};
-	} else {
-		delete value.set;
-	}
-
-	proto.CustomProperties = proto.CustomProperties || {};
-	proto.CustomProperties[field] = value;
-
-	return { value: proto.CustomProperties[field] };
+global.registerBundle = url => Cls => {
+	Cls.BundleURL = url;
+	return Cls;
 };

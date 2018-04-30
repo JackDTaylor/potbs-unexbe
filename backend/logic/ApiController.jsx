@@ -5,8 +5,6 @@ import FrontendModule from "./api/FrontendModule";
 import EntityLayoutModule from "./api/EntityLayoutModule";
 
 export default class ApiController extends Controller {
-	static Version = '1.0';
-
 	get moduleClasses() {
 		return [
 			AuthModule,
@@ -32,7 +30,7 @@ export default class ApiController extends Controller {
 		let urlParts = this.context.request.url.slice(5).split('?');
 		let requestedUrl = urlParts[0];
 
-		let url = urlParts.first();
+		let url = urlParts.first;
 
 		url = url.replace(/\/+/g, '/');
 		url = url.replace(/(^\/+|\/+$)/g, '');
@@ -40,7 +38,7 @@ export default class ApiController extends Controller {
 		url = url.replace(/[^-.a-zA-Z0-9_/]/g, '');
 
 		let query = urlParts.slice(1).join('?');
-		let endpointParts = url.split('/').first().split('.');
+		let endpointParts = url.split('/').first.split('.');
 
 		query = query ? `?${query}` : '';
 
@@ -77,17 +75,22 @@ export default class ApiController extends Controller {
 
 			let result = await module.invoke(endpoint);
 
-			this.sendResultResponse(result);
-		} catch(e) {
-			if(e.isFlowInterrupter) throw e;
+			this.sendResultResponse(result, module.responseMeta);
+		} catch(error) {
+			if(error.isFlowInterrupter) throw error;
 
-			this.sendErrorResponse(e.code || 550, e.message);
+			if(this.context.isAjax == false) {
+			}
+
+			Application.HandleError(this.context.request, this.context.response, error);
+
+			this.sendErrorResponse(error.code || ErrorCode.E_INTERNAL, error.message);
 		}
 	}
 
 	get responseParams() {
 		return {
-			v: ApiController.Version,
+			v: this.context.version.primary,
 		}
 	}
 
@@ -100,11 +103,12 @@ export default class ApiController extends Controller {
 		}, code);
 	}
 
-	sendResultResponse(result) {
+	sendResultResponse(result, meta = {}) {
 		this.context.sendResponse({
 			...this.responseParams,
 			error: false,
 			result: result,
+			meta: empty(meta) ? undefined : meta
 		});
 	}
 }

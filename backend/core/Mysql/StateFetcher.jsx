@@ -1,7 +1,4 @@
-import {Sequelize} from "sequelize";
-import {APPROOT} from "../../config";
 import {FileSystemAsync} from "../FileSystem";
-import {SequelizeEx} from "../Mysql";
 
 class State {
 	tables = {};
@@ -12,7 +9,7 @@ class State {
 		const columnsLayout = {};
 
 		columns.forEach(column => {
-			if(column.DATA_TYPE.toUpperCase() in Sequelize === false) {
+			if(column.DATA_TYPE.toUpperCase() in PropertyType === false) {
 				throw new Error(`Unknown type "${column.DATA_TYPE}"`);
 			}
 
@@ -21,7 +18,7 @@ class State {
 			type = type.join('(');
 
 			columnsLayout[ column.COLUMN_NAME ] = {
-				type: 'Sequelize.' + type,
+				type: 'types.' + type,
 				primaryKey: column.COLUMN_KEY == 'PRI',
 				autoIncrement: column.COLUMN_KEY == 'PRI',
 				allowNull: column.IS_NULLABLE == 'YES',
@@ -39,12 +36,14 @@ class State {
 		let nameSingular = tableData.TABLE_NAME
 			.split('_')
 			.slice(1)
-			.map((part, i) => i > 0 ? part.ucFirst(): part)
-			.join('');
+			// .map((part, i) => i > 0 ? part.ucFirst(): part)
+			.join('_');
 
 		let namePlural = (nameSingular + 's')
 			.replace(/ss$/, 'ses')
 			.replace(/([^aeiouy])ys$/, '$1ies');
+
+		let nameId = (nameSingular + '_ids');
 
 		let columnNames = columns.map(column => column.COLUMN_NAME);
 
@@ -56,6 +55,7 @@ class State {
 			name: {
 				singular: nameSingular,
 				plural: namePlural,
+				id: nameId,
 			},
 			defaultScope: {
 				attributes: { exclude: [] }
@@ -89,7 +89,7 @@ class State {
 			},
 			target: {
 				table: linkData.TABLE_TO,
-				column: 'id',
+				column: ID,
 			},
 			updateRule: linkData.UPDATE_RULE,
 			deleteRule: linkData.DELETE_RULE,
@@ -122,7 +122,7 @@ class State {
 	 * @param tableData
 	 * @return {*}
 	 */
-	processTable(tableData) {
+	registerTable(tableData) {
 		tableData.COLUMNS = this.columnsMap[tableData.TABLE_NAME];
 		tableData.FOREIGN_KEYS = this.foreignKeysMap[tableData.TABLE_NAME];
 
@@ -148,7 +148,7 @@ export default class StateFetcher {
 				const column = state.tables[tableName].columns[columnName];
 
 				if(valueType(column.type) == String) {
-					column.type = new Function('Sequelize', `return ${column.type}`)(Sequelize);
+					column.type = new Function('types', `return ${column.type}`)(PropertyType);
 				}
 
 				if(column.defaultValue && 'expr' in column.defaultValue) {
@@ -158,24 +158,30 @@ export default class StateFetcher {
 						value = `"${value.replace('"', '\\"')}"`;
 					}
 
-					column.defaultValue = new Function(`return ${value}`)(SequelizeEx.NOW, null);
+					column.defaultValue = new Function(`return ${value}`)();
 
 					if(column.defaultValue == 'CURRENT_TIMESTAMP' || column.defaultValue === 'NULL') {
 						column.defaultValue = null;
 					}
 				}
+
+				// This column is definitely stored in database
+				column.stored = true;
+				column.scope = Scope.ALL;
+
+				state.tables[tableName].columns[columnName] = new PropertyDescriptor(columnName, column);
 			});
 		});
 
 		return state;
 	}
 
-	static async GetState(connection) {
-		const stateCacheFile = `${APPROOT}/data/cached-state.json`;
+	static async GetState(forceRefresh = false) {
+		const stateCacheFile = Application.path(`/data/cached-state.json`);
 
-		if(await FileSystemAsync.exists(stateCacheFile) == false) {
-			const stateFetcher = new StateFetcher(connection);
-			const fetchedState = await stateFetcher.fetchState(connection.config.database);
+		if(forceRefresh || await FileSystemAsync.exists(stateCacheFile) == false) {
+			const stateFetcher = new StateFetcher;
+			const fetchedState = await stateFetcher.fetchState(DB.connectionSettings.database);
 
 			await FileSystemAsync.write(stateCacheFile, JSON.stringify(fetchedState));
 		}
@@ -186,19 +192,13 @@ export default class StateFetcher {
 		return StateFetcher.PostprocessState(state);
 	}
 
-	connection = null;
-
-	constructor(connection) {
-		this.connection = connection;
-	}
-
 	/**
 	 * Fetches all tables
 	 * @param schema
 	 * @return {Promise.<*>}
 	 */
 	async fetchTables(schema) {
-		return await this.connection.select(`
+		return await DB.query(`
 			SELECT * 
 			FROM information_schema.TABLES 
 			WHERE TABLE_SCHEMA = :schema
@@ -211,7 +211,7 @@ export default class StateFetcher {
 	 * @return {Promise.<{}>}
 	 */
 	async fetchColumns(schema) {
-		let columnsRaw = await this.connection.select(`
+		let columnsRaw = await DB.query(`
 			SELECT *
 			FROM information_schema.COLUMNS
 			WHERE TABLE_SCHEMA = :schema
@@ -219,7 +219,7 @@ export default class StateFetcher {
 			ORDER BY ORDINAL_POSITION ASC
 		`, { schema });
 
-		let uniqueKeysRaw = await this.connection.select(`
+		let uniqueKeysRaw = await DB.query(`
 			SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME 
 			FROM information_schema.KEY_COLUMN_USAGE
 			WHERE CONSTRAINT_NAME LIKE 'UK_%'
@@ -258,7 +258,7 @@ export default class StateFetcher {
 	 * @return {Promise.<{}>}
 	 */
 	async fetchForeignKeys(schema) {
-		let foreignKeysRaw = await this.connection.select(`
+		let foreignKeysRaw = await DB.query(`
 			SELECT
 			  RC.CONSTRAINT_NAME,
 			  RC.TABLE_NAME AS TABLE_FROM,
@@ -303,7 +303,7 @@ export default class StateFetcher {
 		state.columnsMap = await this.fetchColumns(schema);
 		state.foreignKeysMap = await this.fetchForeignKeys(schema);
 
-		tables.map(tableData => state.processTable(tableData));
+		tables.map(tableData => state.registerTable(tableData));
 
 		return state;
 	}

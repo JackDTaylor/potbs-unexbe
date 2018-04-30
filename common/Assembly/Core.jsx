@@ -1,15 +1,7 @@
-import ObjectUtils from "./Core/Object";
-import StringUtils from "./Core/String";
-import ArrayUtils from "./Core/Array";
-import DateUtils from "./Core/Date";
-import RegExpUtils from "./Core/RegExp";
-import MathUtils from "./Core/Math";
-
-export default () => {
-	ObjectUtils();
-	StringUtils();
-	ArrayUtils();
-	DateUtils();
-	RegExpUtils();
-	MathUtils();
-}
+import "./Core/Object";
+import "./Core/Function";
+import "./Core/String";
+import "./Core/Array";
+import "./Core/Date";
+import "./Core/RegExp";
+import "./Core/Math";

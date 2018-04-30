@@ -2,8 +2,6 @@ import {Hidden} from "material-ui";
 import {Drawer} from "material-ui";
 
 export default class MobileDrawer extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'MobileDrawer'] };
-
 	@prop open = false;
 	@prop close = fn => {};
 

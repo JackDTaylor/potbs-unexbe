@@ -75,13 +75,17 @@ global.isPlainObject = function isPlainObject(value) {
 	return value && value instanceof Object && value.constructor === Object;
 };
 
+global.isUndefined = function isUndefined(value) {
+	return typeof(value) === 'undefined';
+};
+
 /**
  * Returns wheither value is undefined or null
  * @param value
  * @return {boolean}
  */
 global.undefinedOrNull = function undefinedOrNull(value) {
-	return typeof(value) === 'undefined' || value === null;
+	return isUndefined(value) || value === null;
 };
 
 /**
@@ -90,14 +94,24 @@ global.undefinedOrNull = function undefinedOrNull(value) {
  * @return {boolean}
  */
 global.notUndefinedOrNull = function notUndefinedOrNull(value) {
-	return !empty(value);
+	return !undefinedOrNull(value);
 };
 
 /**
- * @alias undefinedOrNull
  * @param value
  * @return {*}
  */
 global.empty = function empty(value) {
-	return undefinedOrNull(value);
+	return undefinedOrNull(value)
+		|| (valueType(value) == Array && value.length < 1)
+		|| (valueType(value) == Object && value.constructor == Object && Object.keys(value).length < 1)
+		|| (value === "") ;
+};
+
+global.cmp = function(a, b) {
+	if(a == b) {
+		return 0;
+	}
+
+	return a > b ? 1 : -1;
 };

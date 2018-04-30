@@ -1,7 +1,7 @@
 import Application from "./../core/Application";
 import {FileSystemSync} from "../core/FileSystem";
 
-const consoleFile = Application.Instance.path('/tmp/console.log');
+const consoleFile = Application.path('/tmp/console.log');
 
 function consoleLogToFile(data, prefix = '', suffix = '') {
 	FileSystemSync.append(consoleFile, prefix + _dpr(data, ' ', true) + suffix + "\n");
@@ -37,7 +37,7 @@ global.console.error = function(...data) {
 
 global.console.assert = function(condition, msg = '') {
 	if(!condition) {
-		throw `Assertion failed${msg && `, that ${msg}`}`;
+		throw new Error(`Assertion failed${msg && `, that ${msg}`}`);
 	}
 
 	return condition;

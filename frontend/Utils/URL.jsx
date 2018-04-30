@@ -55,3 +55,12 @@ window.URL.parseReadonly = function parseReadonly(url) {
 window.URL.parse = function parse(url) {
 	return new URLData(url);
 };
+window.URL.clean = function parse(url) {
+	return '/' + url.trim('/').replace(/\/+/g, '/');
+};
+
+window.URL.withParams = function withParams(url, params) {
+	return url.replace(RouteManager.ParamRegex, param => {
+		return params[param.trim('{}')] || '';
+	});
+};

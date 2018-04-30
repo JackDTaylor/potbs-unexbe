@@ -3,8 +3,6 @@ import ContextIconButton from "../../Common/ContextIconButton";
 import Semitransparent from "../../Common/Semitransparent";
 
 export default class AccountMenu extends ReactComponent {
-	get cssClass() { return [...super.cssClass, 'AccountMenu'] };
-
 	render() {
 		return (
 			<ContextIconButton active icon={icon('account circle')}>
