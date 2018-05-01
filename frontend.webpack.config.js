@@ -6,6 +6,7 @@ const fs = require('fs');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpackSharedConfig = require("./utils/webpack-shared-config");
+const UpgradeBuildNumber = require("./utils/version-plugin").UpgradeBuildNumber;
 
 module.exports = {
 	...webpackSharedConfig,
@@ -45,7 +46,7 @@ module.exports = {
 		// 	mangle: { keep_fnames: true },
 		// })
 
-		...webpackSharedConfig.plugins,
+		new UpgradeBuildNumber(),
 	],
 
 	module: {

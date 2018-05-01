@@ -1,4 +1,3 @@
-const UpgradeBuildNumber = require('./version-plugin').UpgradeBuildNumber;
 const globalModules = __dirname + `/../node_modules`;
 
 module.exports = {
@@ -17,9 +16,6 @@ module.exports = {
 	resolve: {
 		extensions: [".jsx", ".webpack.js", ".web.js", ".js", ".json"],
 	},
-	plugins: [
-		new UpgradeBuildNumber()
-	],
 	resolveLoader: {
 		modules: [ globalModules ],
 		extensions: [ '.js', '.json' ],

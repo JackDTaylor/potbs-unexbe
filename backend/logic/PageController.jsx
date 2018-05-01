@@ -39,6 +39,7 @@ export default class PageController extends Controller {
 		const frontendData = await this.getFrontendData();
 
 		this.context.sendResponse(await this.getPageTemplate({
+			version: frontendData.version,
 			frontendData: embedScript(`
 				window.frontendData = ${JSON.stringify(frontendData)};
 			`)

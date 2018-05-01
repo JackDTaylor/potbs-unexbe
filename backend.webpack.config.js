@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const nodeExternals = require('webpack-node-externals');
 const webpackSharedConfig = require("./utils/webpack-shared-config");
+const UpgradeBuildNumber = require("./utils/version-plugin").UpgradeBuildNumber;
 const WatchExternalFilesPlugin = require('webpack-watch-files-plugin').default;
 
 function RestartOnCompile() {}
@@ -36,7 +37,7 @@ module.exports = {
 		new RestartOnCompile(),
 		new WatchExternalFilesPlugin({files: [baseDir + '/language/lang-*.csv']}),
 
-		...webpackSharedConfig.plugins,
+		new UpgradeBuildNumber(true),
 	],
 	module: {
 		loaders: [{
