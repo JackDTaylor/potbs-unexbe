@@ -2,7 +2,7 @@ import ModelProvider from "../ModelProvider";
 
 export default class ViewProvider extends ModelProvider {
 	async fetchFields() {
-		// TODO: Implement this
+		// TODO: Implement this function2
 	}
 
 	async fetchEntry(id) {
