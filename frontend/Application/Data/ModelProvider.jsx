@@ -1,15 +1,14 @@
 import DataProvider from "./DataProvider";
 
 export default class ModelProvider extends DataProvider {
+	/** @type {String} */
 	modelCode;
+
 	model;
 
-	async getModel() {
-		if(!this.model) {
-			this.model = await GetModel(this.modelCode);
-		}
-
-		return this.model;
+	async prepare() {
+		await super.prepare();
+		this.model = await GetModel(this.modelCode);
 	}
 
 	constructor(id, modelCode) {

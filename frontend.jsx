@@ -11,7 +11,6 @@ import FrontendAPI from "./frontend/Application/FrontendAPI";
 
 	console.verbose('Preparing...');
 
-
 	global.AppController = new FrontendAppController();
 	global.API = FrontendAPI;
 

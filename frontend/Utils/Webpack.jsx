@@ -1,5 +1,4 @@
-/** @return {Object} */
-import FrontendModel from "../Application/FrontendModel";
+import "../Application/FrontendModel";
 
 window.GetComponent = async function GetComponent(path) {
 	try {
@@ -63,6 +62,7 @@ window.GetModel = async function GetModel(path) {
 
 			Model.GridConfig = await GetModelMeta(path, ModelMeta.GRID_CONFIG, Model, GridConfig);
 			Model.FormConfig = await GetModelMeta(path, ModelMeta.FORM_CONFIG, Model, FormConfig);
+			Model.ViewConfig = await GetModelMeta(path, ModelMeta.VIEW_CONFIG, Model, ViewConfig);
 
 			await Model.Prepare(code);
 

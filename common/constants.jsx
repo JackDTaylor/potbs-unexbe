@@ -204,4 +204,5 @@ global.ErrorCode = class extends Enum {
 global.ModelMeta = class extends Enum {
 	static GRID_CONFIG = 'gridConfig';
 	static FORM_CONFIG = 'formConfig';
+	static VIEW_CONFIG = 'viewConfig';
 };

@@ -15,8 +15,8 @@ export default class AbstractCell extends ReactComponent {
 	@state asyncValue = NO_VALUE;
 	asyncPromise = null;
 
-	get property() {
-		return this.column.property;
+	get __property() {
+		return this.column.__property;
 	}
 
 	async waitAsyncValue(value) {

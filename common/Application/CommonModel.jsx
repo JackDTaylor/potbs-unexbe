@@ -89,26 +89,46 @@ export default class CommonModel {
 		// dpr(code, this.Layout);
 	}
 
+	/**
+	 * @return PropertyDescriptor[]
+	 */
 	static get Properties() {
 		return Object.values(this.Layout);
 	}
 
+	/**
+	 * @return PropertyDescriptor[]
+	 */
 	static get StoredProperties() {
 		return this.Properties.filter(p => p.stored);
 	}
 
+	/**
+	 * @return PropertyDescriptor[]
+	 */
 	static get VirtualProperties() {
 		return this.Properties.filter(p => !p.stored);
 	}
 
+	/**
+	 * @return PropertyDescriptor[]
+	 */
 	static get ReferentialProperties() {
 		return this.Properties.filter(p => p.referential);
 	}
 
+
+	/**
+	 * @return PropertyDescriptor[]
+	 */
 	static get SubqueryProperties() {
 		return this.Properties.filter(p => p.referential && p.link.isId && p.subquery);
 	}
 
+	/**
+	 * @param scope
+	 * @return PropertyDescriptor[]
+	 */
 	static PropertiesByScope(scope) {
 		// this.Properties.forEach(p => console.log(p.name, p, p.scope,scope, p.scope & scope));
 

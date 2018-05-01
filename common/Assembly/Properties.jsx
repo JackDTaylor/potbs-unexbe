@@ -14,14 +14,15 @@ global.abstract = function(proto, field) {
 };
 
 global.scoped  = scope  =>  defineKey('scope',  scope);
+global.widget  = widget  =>  defineKey('widget',  widget);
 global.secure  = defineKey('secure', true);
 global.hidden  = defineKey('hidden', true);
 global.rowLink = defineKey('rowLink', true);
 global.type    = type => defineKey('type', type);
 
-global.cellRenderer   = fn => defineKey('cellRenderer',   fn);
-global.fieldRenderer  = fn => defineKey('fieldRenderer',  fn);
-global.detailRenderer = fn => defineKey('detailRenderer', fn);
+global.cellRenderer   = fn => defineKey('cellRendererOverride',   fn);
+global.fieldRenderer  = fn => defineKey('fieldRendererOverride',  fn);
+global.detailRenderer = fn => defineKey('detailRendererOverride', fn);
 
 global.property = function(proto, field, descriptor) {
 	let value = utils.decoratedValue(descriptor, {});
@@ -60,9 +61,11 @@ global.PropertyDescriptor = class PropertyDescriptor {
 	set = null;
 	scope = Scope.ALL;
 
-	cellRenderer = null;
-	fieldRenderer = null;
-	detailRenderer = null;
+	cellRendererOverride = null;
+	fieldRendererOverride = null;
+	detailRendererOverride = null;
+
+	widget = 'defaultWidget';
 
 	constructor(name, data = {}) {
 		this.name = name;
@@ -90,23 +93,16 @@ global.PropertyDescriptor = class PropertyDescriptor {
 		return !!this.link;
 	}
 
-	get sortable() {
-		return this.queryable;
-	}
-
-	get filterable() {
-		return this.queryable;
-	}
-
 	get listRowLink() {
-		return !this.cellRenderer && (this.name == 'name' || this.rowLink)
+		return this.cellRendererOverride == false && (this.name == 'name' || this.rowLink)
 	}
 
 	postprocess() {
 		if(this.name == ID) {
-			// ID props are always readonly and hidden
+			// ID props are always readonly, hidden and excluded from view
 			this.writable = false;
 			this.hidden = true;
+			this.scope = (this.scope | Scope.VIEW) ^ Scope.VIEW; // remove VIEW if present
 		}
 
 		if(this.expr && !this.set) {
@@ -116,20 +112,20 @@ global.PropertyDescriptor = class PropertyDescriptor {
 
 		if(this.secure) {
 			// Secure props are not available for reading
-			this.scope = this.scope & Scope.Writable;
+			this.scope = this.scope & Scope.Writable; // leave only Writable flags of what's present in scope
 		}
 	}
 
-	getCellRenderer() {
-		return GetRenderer(this.cellRenderer || this.type.cellRenderer || CellRenderers.DefaultCell);
+	get cellRenderer() {
+		return this.cellRendererOverride || this.type.cellRenderer || CellRenderers.DefaultCell;
 	}
 
-	getFieldRenderer() {
-		return GetRenderer(this.fieldRenderer || this.type.fieldRenderer || FieldRenderers.DefaultField);
+	get fieldRenderer() {
+		return this.fieldRendererOverride || this.type.fieldRenderer || FieldRenderers.DefaultField;
 	}
 
-	getDetailRenderer() {
-		return GetRenderer(this.detailRenderer || this.type.detailRenderer || this.getCellRenderer());
+	get detailRenderer() {
+		return this.detailRendererOverride || this.type.detailRenderer || this.cellRendererCode;
 	}
 
 	toJSON() {

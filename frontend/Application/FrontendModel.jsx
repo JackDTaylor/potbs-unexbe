@@ -1,15 +1,27 @@
 import CommonModel from "../../common/Application/CommonModel";
 import Link from "../Common/Link";
 
+import "./FrontendModelMeta";
+
 const frontendProperties = [
 	'get',
 	'set',
-	'cellRenderer',
-	'fieldRenderer',
-	'detailRenderer'
+	'cellRendererOverride',
+	'fieldRendererOverride',
+	'detailRendererOverride'
 ];
 
-@reactified export default class FrontendModel extends CommonModel {
+/**
+ * Test 2
+ * @static {GridConfig} GridConfig
+ * @static {FormConfig} FormConfig
+ * @static {ViewConfig} ViewConfig
+ *
+ * @extends {CommonModel}
+ * @global
+ */
+@reactified
+export default class FrontendModel extends CommonModel {
 	static SharedModelCache = {};
 
 	/** @return Map */
@@ -39,7 +51,7 @@ const frontendProperties = [
 			layout[key] = new PropertyDescriptor(key, layout[key]);
 
 			if(layout[key].listRowLink) {
-				layout[key].cellRenderer = CellRenderers.RowLinkCell;
+				layout[key].cellRendererOverride = CellRenderers.RowLinkCell;
 			}
 		});
 
@@ -88,30 +100,12 @@ const frontendProperties = [
 	}
 }
 
-class FrontendModelMeta {
-	Model;
-
-	constructor(Model) {
-		this.Model = Model;
-	}
-}
-
-class GridConfig extends FrontendModelMeta {
-	columnOrder = [];
-	rowActions = [];
-
-	// Row actions
-	useEditRowAction = true;
-	useDeleteRowAction = true;
-}
-
-class FormConfig extends FrontendModelMeta {
-}
-
+/** @type {typeof CommonModel} */
 global.PlatformSpecificModel = FrontendModel;
 
-global.FrontendModelMeta = FrontendModelMeta;
-global.GridConfig = GridConfig;
-global.FormConfig = FormConfig;
-
+/**
+ * TestAAA
+ * @type {FrontendModel}
+ * @extends CommonModel
+ */
 global.FrontendModel = FrontendModel;

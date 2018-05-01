@@ -175,5 +175,4 @@ export default class FrontendAppController {
 		);
 	}
 }
-/** @type {typeof FrontendAppController} */
 global.AppController = null;

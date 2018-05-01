@@ -1,6 +1,9 @@
 import Page from "./Page";
+import ViewLayout from "../Common/View/ViewLayout";
 
 export default class ViewPage extends Page {
+	dataSource = {};
+
 	get viewProvider() {
 		return this.params.viewProvider;
 	}
@@ -11,8 +14,7 @@ export default class ViewPage extends Page {
 
 	renderContents() {
 		return (
-			<b>view page</b>
-			/*<FilteredGrid provider={this.gridProvider} />*/
+			<ViewLayout provider={this.viewProvider} dataSource={this.dataSource} />
 		);
 	}
 }

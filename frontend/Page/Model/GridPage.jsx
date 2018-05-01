@@ -15,7 +15,9 @@ export default class ModelGridPage extends GridPage {
 	}
 
 	async preparePage() {
-		this.model = await this.gridProvider.getModel();
+		await this.gridProvider.prepare();
+
+		this.model = this.gridProvider.model;
 
 		return super.preparePage();
 	}

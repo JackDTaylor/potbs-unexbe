@@ -88,7 +88,7 @@ export default class GridList extends ReactComponent {
 		this.columns = await this.provider.fetchColumns();
 
 		this.hiddenColumnNames = this.columns
-			.filter(c => c.property.hidden)
+			.filter(c => c.hidden)
 			.map(c => c.name);
 
 		await this.doFetch();
@@ -152,7 +152,7 @@ export default class GridList extends ReactComponent {
 	get sortingExtensions() {
 		return this.columns.map(c => ({
 			columnName:     c.name,
-			sortingEnabled: c.property.sortable,
+			sortingEnabled: c.sortable,
 		}));
 	}
 
