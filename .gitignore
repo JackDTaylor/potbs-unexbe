@@ -2,6 +2,5 @@
 backend/config.jsx
 node_modules/
 utils/.backup/
-/version/build
-/version/minor
+/version
 /public/assets/styles/*.css
