@@ -1,8 +1,7 @@
 import ModelProvider from "../ModelProvider";
 
 export default class ViewProvider extends ModelProvider {
-	async fetchFields() {
-
+	async fetchProperties() {
 	}
 
 	async fetchEntry(id) {
