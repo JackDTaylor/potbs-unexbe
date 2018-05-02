@@ -23,8 +23,8 @@ export default class ViewLayout extends ReactComponent {
 
 		return (
 			<div {...this.cls}>
-				<ActionPanel actions={this.actions} />
-				<WidgetLayout items={this.widgets} />
+				<ActionPanel actions={this.actions} target={this.dataSource} />
+				<WidgetLayout widgets={this.widgets} dataSource={this.dataSource} />
 			</div>
 		);
 	}

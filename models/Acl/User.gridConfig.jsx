@@ -1,5 +1,5 @@
 
-import Action from "../../frontend/Common/Actions/Action";
+import Action from "../../frontend/Common/Action/Action";
 
 export default class extends GridConfig {
 	columnOrder = ['full_name', 'email', 'phone'];

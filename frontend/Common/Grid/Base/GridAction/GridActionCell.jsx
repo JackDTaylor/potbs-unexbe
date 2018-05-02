@@ -13,12 +13,16 @@ export default class GridActionCell extends React.PureComponent {
 
 	@prop actions;
 
-	get actionComponents() {
-		return this.actions.map((actionFn, key) => actionFn({
-			gridActionCellProps: this.props,
+	get actionProps() {
+		return {
 			target: this.props.tableRow.row,
-			key
-		}));
+			renderMode: 'icon',
+			gridActionCellProps: this.props,
+		}
+	}
+
+	get actionComponents() {
+		return this.actions.map((actionFn, key) => actionFn({ key, ...this.actionProps }));
 	}
 
 	render() {

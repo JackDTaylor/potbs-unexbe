@@ -3,7 +3,17 @@ class PropertyProvider {
 	dataSource = {};
 
 	registerProperty(property) {
-		this.properties[property.name] = property;
+		this.properties[property.name] = {
+			name:       property.name,
+			label:      property.label,
+			renderer:   property.detailRenderer,
+
+			__property: property,
+		};
+	}
+
+	registerProperties(properties) {
+		properties.forEach(property => this.registerProperty(property));
 	}
 
 	registerDataSource(dataSource) {
@@ -14,9 +24,12 @@ class PropertyProvider {
 export default class BaseWidget extends ReactComponent {
 	static PropertyProvider = PropertyProvider;
 
+	@prop propertyProvider;
+
 	render() {
 		return (
 			<div {...this.cls}>
+				{Object.keys(this.propertyProvider.properties).join(', ')}
 				BaseWidget
 			</div>
 		);

@@ -113,6 +113,28 @@ a.dmi.dmi-link:visited:active {
 a.dmi.dmi-link.dmi-action {
   text-decoration: none;
 }
+.dmi.dmi-action-panel {
+  text-align: right;
+  margin-bottom: 1em;
+}
+.dmi.dmi-action-panel .dmi-action {
+  margin-left: 0.5em;
+}
+.dmi.dmi-widget-wrapper {
+  margin-bottom: 1em;
+  position: relative;
+}
+.dmi.dmi-widget-wrapper .dmi-widget-handle {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+.dmi.dmi-widget-wrapper:hover .dmi-widget-handle {
+  opacity: 0.5;
+}
 .dmi.dmi-cell {
   white-space: normal;
 }

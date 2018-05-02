@@ -13,6 +13,7 @@ import "./PropertyTypes/Base";
 
 import "./Assembly/Decorators";
 import "./Assembly/Properties";
+import "./Assembly/Widgets";
 
 import "./Assembly/Core";
 import "./Assembly/Models";

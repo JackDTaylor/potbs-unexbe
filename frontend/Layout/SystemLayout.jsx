@@ -6,7 +6,7 @@ import StatusPanel from "./StatusPanel";
 import NavPanel from "./nav/NavPanel";
 import MobileDrawer from "./drawer/MobileDrawer";
 import DesktopDrawer from "./drawer/DesktopDrawer";
-import IconButton from "../Common/IconButton";
+import IconButton from "../Common/Button/IconButton";
 import NotificationPanel from "./notification/NotificationPanel";
 
 // @style(theme => ({

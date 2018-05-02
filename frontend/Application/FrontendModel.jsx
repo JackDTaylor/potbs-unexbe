@@ -50,7 +50,7 @@ export default class FrontendModel extends CommonModel {
 
 			layout[key] = new PropertyDescriptor(key, layout[key]);
 
-			if(layout[key].listRowLink) {
+			if(layout[key].cellRendererOverride == null && key == 'name') {
 				layout[key].cellRendererOverride = CellRenderers.RowLinkCell;
 			}
 		});
@@ -93,6 +93,58 @@ export default class FrontendModel extends CommonModel {
 		let Model = await GetModel(code);
 
 		return ids.mapAsyncConcurrent(async id => await Model.FindById(id));
+	}
+
+	getWidgetConfig(name, _override = {}) {
+		let { propertyFilter, ...override} = _override;
+
+		const viewConfig = this.constructor.ViewConfig;
+		let widgetConfig = viewConfig.preparedWidgets.filter(w => w.name == name).first;
+
+		if(override) {
+			widgetConfig = {
+				...widgetConfig,
+				...override
+			};
+		}
+
+		if(empty(propertyFilter)) {
+			propertyFilter = Scope.VIEW;
+		}
+
+		let properties = this.constructor.PropertiesByFilter(propertyFilter).filter(p => p.widget == name);
+
+		widgetConfig.propertyProvider.registerDataSource(this);
+		widgetConfig.propertyProvider.registerProperties(properties);
+
+		return widgetConfig;
+	}
+
+	getWidget(name, override = {}) {
+		let widgetConfig = this.getWidgetConfig(name, override);
+
+		if(!widgetConfig) {
+			console.warn(`Unknown widget ${this.constructor.Code}.${name}`);
+			return;
+		}
+
+		return RenderComponent(widgetConfig);
+	}
+
+	getWidgets(override = {}) {
+		let widgetNames = this.constructor.ViewConfig.widgets.WidgetNames;
+
+		return Object.combine(widgetNames, widgetNames.map(name => {
+			return this.getWidget(name, override);
+		}));
+	}
+
+	getWidgetConfigs(override = {}) {
+		let widgetNames = this.constructor.ViewConfig.widgets.WidgetNames;
+
+		return Object.combine(widgetNames, widgetNames.map(name => {
+			return this.getWidgetConfig(name, override);
+		}));
 	}
 
 	toReact() {

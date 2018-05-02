@@ -35,7 +35,34 @@ a.dmi.dmi-link {
 	}
 }
 
+.dmi.dmi-action-panel {
+	text-align: right;
+	margin-bottom: 1em;
 
+	.dmi-action {
+		margin-left: 0.5em;
+	}
+}
+
+.dmi.dmi-widget-wrapper {
+	margin-bottom: 1em;
+	position: relative;
+
+	.dmi-widget-handle {
+		position: absolute;
+		cursor: pointer;
+		top: 0;//.75em;
+		right: 0;//.75em;
+		opacity: 0;
+		transition: opacity 0.25s ease-out;
+	}
+
+	&:hover {
+		.dmi-widget-handle {
+			opacity: 0.5;
+		}
+	}
+}
 
 .dmi.dmi-cell {
 	white-space: normal;

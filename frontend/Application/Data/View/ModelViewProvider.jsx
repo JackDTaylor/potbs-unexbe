@@ -20,6 +20,10 @@ export default class ModelViewProvider extends ViewProvider {
 		return this.model.ViewConfig.preparedWidgets;
 	}
 
+	get actions() {
+		return this.model.ViewConfig.actions;
+	}
+
 	async fetchEntry(id) {
 		return await this.model.FindById(id);
 	}

@@ -3,7 +3,7 @@ import {
 	Typography
 } from "material-ui";
 
-import ContextIconButton from "../../Common/ContextIconButton";
+import ContextIconButton from "../../Common/Button/ContextIconButton";
 
 const HideButton = props => (
 	<ContextIconButton

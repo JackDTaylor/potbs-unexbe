@@ -1,10 +1,13 @@
+import WidgetWrapper from "./WidgetWrapper";
+
 export default class WidgetLayout extends ReactComponent {
-	@prop items;
+	@prop dataSource;
+	@prop widgets;
 
 	render() {
 		return (
 			<div {...this.cls}>
-				WidgetLayout
+				{this.widgets.map(widget => <WidgetWrapper key={widget.name} widget={widget} />)}
 			</div>
 		);
 	}

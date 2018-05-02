@@ -16,6 +16,20 @@ export default class ContextIconButton extends ReactComponent {
 		this.anchor = null;
 	}
 
+	get items() {
+		let children = this.props.children;
+
+		if(empty(children)) {
+			return [];
+		}
+
+		if(children instanceof Array == false) {
+			return [children];
+		}
+
+		return children;
+	}
+
 
 	render() {
 		const openMenu = ev => this.doOpen(ev);
@@ -33,7 +47,7 @@ export default class ContextIconButton extends ReactComponent {
 				/>
 
 				<Menu anchorEl={this.anchor} open={this.open} onClose={closeMenu}>
-					{this.props.children.map(child => {
+					{this.items.map(child => {
 						let props = { ...child.props };
 
 						let handler = props.onClick || (fn => {});

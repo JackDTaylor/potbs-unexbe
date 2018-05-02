@@ -2,7 +2,7 @@ import {Toolbar, Typography} from "material-ui";
 import AccountMenu from "./status/AccountMenu";
 import NotificationButton from "./notification/NotificationButton";
 import SystemClock from "./SystemClock";
-import IconButton from "../Common/IconButton";
+import IconButton from "../Common/Button/IconButton";
 
 export default class StatusPanel extends ReactComponent {
 	@prop backButtonHandler;

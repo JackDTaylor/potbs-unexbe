@@ -1,4 +1,4 @@
-import IconButton from "../../Common/IconButton";
+import IconButton from "../../Common/Button/IconButton";
 import {Badge} from "material-ui";
 
 export default class NotificationButton extends ReactComponent {

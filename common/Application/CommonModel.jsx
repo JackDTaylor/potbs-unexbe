@@ -133,9 +133,32 @@ export default class CommonModel {
 	 * @return PropertyDescriptor[]
 	 */
 	static PropertiesByScope(scope) {
-		// this.Properties.forEach(p => console.log(p.name, p, p.scope,scope, p.scope & scope));
-
 		return this.Properties.filter(p => p.scope & scope);
+	}
+
+	/**
+	 * @param filter
+	 * @return PropertyDescriptor[]
+	 */
+	static PropertiesByFilter(filter) {
+		if(!filter) {
+			return this.Properties;
+		}
+
+		switch(valueType(filter)) {
+			case Number: return this.PropertiesByScope(filter);
+
+			case Array: {
+				if(filter.first instanceof PropertyDescriptor) {
+					return filter;
+				}
+
+				const propertyNames = filter;
+				filter = p => propertyNames.has(p.name);
+			}
+		}
+
+		return this.Properties.filter(filter);
 	}
 
 	/**

@@ -8,4 +8,10 @@ export default class PhoneCell extends ButtonCell {
 	get buttonAction() {
 		return `tel:${this.value.replace(/[^+\d]/, '')}`;
 	}
+
+	get buttonProps() {
+		return {
+			tooltip: 'Позвонить',
+		};
+	}
 }

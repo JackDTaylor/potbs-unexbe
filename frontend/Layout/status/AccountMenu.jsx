@@ -1,5 +1,5 @@
 import {MenuItem} from "material-ui";
-import ContextIconButton from "../../Common/ContextIconButton";
+import ContextIconButton from "../../Common/Button/ContextIconButton";
 import Semitransparent from "../../Common/Semitransparent";
 
 export default class AccountMenu extends ReactComponent {

@@ -1,7 +1,7 @@
 import BaseWidget from "../Common/View/Widget/BaseWidget";
-import Action from "../Common/Actions/Action";
-import DeleteAction from "../Common/Actions/DeleteAction";
-import EditAction from "../Common/Actions/EditAction";
+import Action from "../Common/Action/Action";
+import DeleteAction from "../Common/Action/DeleteAction";
+import EditAction from "../Common/Action/EditAction";
 
 export default class FrontendModelMeta {
 	Model;
@@ -62,16 +62,17 @@ class ViewConfig extends FrontendModelMeta {
 	hideDeleteAction = true;
 
 	get widgets() {
-		return {
-			defaultWidget: BaseWidget
+		return class {
+			@widget(BaseWidget) defaultWidget;
 		};
 	};
 
 	get preparedWidgets() {
-		const widgets = this.widgets;
+		const widgetCollection = this.widgets;
+		const widgets = new widgetCollection;
 		const widgetConfig = {};
 
-		Object.keys(this.widgets).forEach(key => {
+		widgetCollection.WidgetNames.forEach(key => {
 			let widget = widgets[key];
 
 			if(valueType(widget) != Object) {
@@ -84,7 +85,7 @@ class ViewConfig extends FrontendModelMeta {
 			widgetConfig[key] = widget;
 		});
 
-		return widgetConfig;
+		return Object.values(widgetConfig);
 	}
 }
 

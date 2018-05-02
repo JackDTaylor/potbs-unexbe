@@ -13,16 +13,15 @@ global.abstract = function(proto, field) {
 	};
 };
 
-global.scoped  = scope  =>  defineKey('scope',  scope);
-global.widget  = widget  =>  defineKey('widget',  widget);
-global.secure  = defineKey('secure', true);
-global.hidden  = defineKey('hidden', true);
-global.rowLink = defineKey('rowLink', true);
-global.type    = type => defineKey('type', type);
+global.scoped            = scope  => defineKey('scope',  scope);
+global.attachedToWidget  = widget => defineKey('widget',  widget);
+global.type              = type   => defineKey('type', type);
+global.secure            = defineKey('secure', true);
+global.hidden            = defineKey('hidden', true);
 
-global.cellRenderer   = fn => defineKey('cellRendererOverride',   fn);
-global.fieldRenderer  = fn => defineKey('fieldRendererOverride',  fn);
-global.detailRenderer = fn => defineKey('detailRendererOverride', fn);
+global.cellRenderer      = renderer => defineKey('cellRendererOverride',   renderer);
+global.fieldRenderer     = renderer => defineKey('fieldRendererOverride',  renderer);
+global.detailRenderer    = renderer => defineKey('detailRendererOverride', renderer);
 
 global.property = function(proto, field, descriptor) {
 	let value = utils.decoratedValue(descriptor, {});
@@ -91,10 +90,6 @@ global.PropertyDescriptor = class PropertyDescriptor {
 
 	get referential() {
 		return !!this.link;
-	}
-
-	get listRowLink() {
-		return this.cellRendererOverride == null && (this.name == 'name' || this.rowLink)
 	}
 
 	postprocess() {

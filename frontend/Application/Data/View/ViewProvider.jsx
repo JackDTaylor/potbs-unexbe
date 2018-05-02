@@ -13,55 +13,20 @@ export default class ViewProvider extends DataProvider {
 		return [];
 	}
 
-	/** @protected */
-	findWidgetPropertyProvider(property, widgets) {
-		if(!property.widget) {
-			return null;
-		}
-
-		if(widgets[property.widget]) {
-			return widgets[property.widget].propertyProvider;
-		}
-
-		console.warn(`Unknown widget '${property.widget}' for property '${property.name}'`);
-
-		if(widgets.defaultWidget) {
-			return widgets.defaultWidget.propertyProvider;
-		}
-
-		console.warn(`No defaultWidget was found, skipping '${property.name}'`);
-		return null;
-	};
-
-	/** @protected */
-	mapToWidgetProperty(property) {
-		return {
-			name: property.name,
-			label: property.label,
-			renderer: property.detailRenderer,
-
-			__property: property,
-		};
-	}
-
 	/**
 	 * Fetches the widgets
 	 * @param dataSource
 	 * @return {Array}
 	 */
 	fetchWidgets(dataSource = {}) {
-		let widgets = this.widgets;
+		return this.widgets.map(widget => {
+			const widgetProperties = this.properties.filter(p => p.widget == widget.name);
 
-		this.properties.forEach(property => {
-			const provider = this.findWidgetPropertyProvider(property, widgets);
+			widget.propertyProvider.registerDataSource(dataSource);
+			widget.propertyProvider.registerProperties(widgetProperties);
 
-			if(provider) {
-				provider.registerProperty(this.mapToWidgetProperty(property));
-				provider.registerDataSource(dataSource);
-			}
+			return widget;
 		});
-
-		return Object.values(widgets);
 	}
 
 	/**
@@ -70,6 +35,6 @@ export default class ViewProvider extends DataProvider {
 	 * @return {Array}
 	 */
 	fetchActions(dataSource = {}) {
-		// TODO
+		return this.actions;
 	}
 }
