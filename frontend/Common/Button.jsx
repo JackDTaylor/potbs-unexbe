@@ -1,9 +1,15 @@
-import {Button as MuiButton} from "material-ui";
+import {Button as MuiButton, Tooltip} from "material-ui";
 
 export default class Button extends ReactComponent {
 	render() {
-		const {className, ...props} = this.props;
+		const {className, tooltip, ...props} = this.props;
 
-		return <MuiButton {...this.cls} {...props} />
+		let button = <MuiButton {...this.cls} {...props} />;
+
+		if(tooltip) {
+			return <Tooltip title={tooltip}>{button}</Tooltip>;
+		}
+
+		return button;
 	}
 }

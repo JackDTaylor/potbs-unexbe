@@ -94,7 +94,7 @@ global.PropertyDescriptor = class PropertyDescriptor {
 	}
 
 	get listRowLink() {
-		return this.cellRendererOverride == false && (this.name == 'name' || this.rowLink)
+		return this.cellRendererOverride == null && (this.name == 'name' || this.rowLink)
 	}
 
 	postprocess() {

@@ -1,17 +1,20 @@
-import GridAction from "../../frontend/Common/Grid/Base/GridAction/GridAction";
+
+import Action from "../../frontend/Common/Actions/Action";
 
 export default class extends GridConfig {
 	columnOrder = ['full_name', 'email', 'phone'];
 
-	rowActions = [
-		p => (
-			<GridAction {...p}
+	get actions(){
+		return [
+			action => <Action {...action}
 				label="Добавить в мои аккаунты"
 				icon="person add"
-				onExecute={fn => console.log('AccountManager.addAccount', p.row.id)}
-			/>
-		),
-	];
+				onExecute={fn => console.log('AccountManager.addAccount', action.target.id)}
+			/>,
 
-	useDeleteRowAction = false;
+			...super.actions,
+		];
+	}
+
+	hideDeleteAction = false;
 }

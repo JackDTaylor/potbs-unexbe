@@ -1,6 +1,6 @@
-import GridAction from "../GridAction";
+import Action from "./Action";
 
-export default class EditGridAction extends GridAction {
+export default class EditAction extends Action {
 	get defaultIcon() {
 		return 'edit';
 	}

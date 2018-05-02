@@ -96,6 +96,7 @@ global.asyncCatch = function(proto, field, descriptor) {
 };
 
 global.named = (...names) => Cls => {
+	/** @type Noun */
 	Cls.Name = new Noun(...names);
 	return Cls;
 };

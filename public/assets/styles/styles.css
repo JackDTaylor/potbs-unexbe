@@ -110,7 +110,7 @@ a.dmi.dmi-link:link:active,
 a.dmi.dmi-link:visited:active {
   color: #2196F3;
 }
-a.dmi.dmi-link.dmi-grid-action {
+a.dmi.dmi-link.dmi-action {
   text-decoration: none;
 }
 .dmi.dmi-cell {

@@ -1,36 +1,71 @@
 import BaseWidget from "../Common/View/Widget/BaseWidget";
+import Action from "../Common/Actions/Action";
+import DeleteAction from "../Common/Actions/DeleteAction";
+import EditAction from "../Common/Actions/EditAction";
 
 export default class FrontendModelMeta {
 	Model;
 
 	constructor(Model) {
+		if(!Model) {
+			throw new Error('No model reference profided into FrontendModelMeta constructor');
+		}
+
 		this.Model = Model;
+	}
+
+	get GridConfig() {
+		return this.Model.GridConfig;
+	}
+
+	get FormConfig() {
+		return this.Model.FormConfig;
+	}
+
+	get ViewConfig() {
+		return this.Model.ViewConfig;
+	}
+
+	// Available actions
+	hideEditAction = false;
+	hideDeleteAction = false;
+
+	get actions() {
+		let actions = [];
+
+		if(this.hideEditAction == false) {
+			actions.push(p => <EditAction {...p}
+				label={`Изменить ${this.Model.Name.acc}`}
+				onExecute={p.target.editUrl}
+			/>);
+		}
+
+		if(this.hideDeleteAction == false) {
+			actions.push(p => <DeleteAction {...p}
+				label={`Удалить ${this.Model.Name.acc}`}
+				onExecute={fn => console.log(this.Model.Code + '.DeleteAction', p)}
+			/>);
+		}
+
+		return actions;
 	}
 }
 
 class GridConfig extends FrontendModelMeta {
 	columnOrder = [];
-	rowActions = [];
-
-	// Row actions
-	useEditRowAction = true;
-	useDeleteRowAction = true;
 }
 
 class FormConfig extends FrontendModelMeta {
 }
 
 class ViewConfig extends FrontendModelMeta {
-	actions = [];
+	hideDeleteAction = true;
 
 	get widgets() {
 		return {
 			defaultWidget: BaseWidget
 		};
 	};
-
-	useEditAction = true;
-	useDeleteAction = false;
 
 	get preparedWidgets() {
 		const widgets = this.widgets;

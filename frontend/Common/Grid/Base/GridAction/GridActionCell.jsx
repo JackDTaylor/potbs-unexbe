@@ -14,7 +14,11 @@ export default class GridActionCell extends React.PureComponent {
 	@prop actions;
 
 	get actionComponents() {
-		return this.actions.map((actionFn, key) => actionFn({ ...this.props, key }));
+		return this.actions.map((actionFn, key) => actionFn({
+			gridActionCellProps: this.props,
+			target: this.props.tableRow.row,
+			key
+		}));
 	}
 
 	render() {

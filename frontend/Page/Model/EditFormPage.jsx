@@ -6,7 +6,7 @@ export default class ModelEditFormPage extends FormPage {
 	get pageTitle() {
 		// let name = this.model.Name || new Noun('элемент');
 
-		// return this.model ? `Редактирование ${name.sin.gen}` : super.pageTitle;
+		// return this.model ? `Редактирование ${name.gen}` : super.pageTitle;
 	}
 
 	async getDefaults() {

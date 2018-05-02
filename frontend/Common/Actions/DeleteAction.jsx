@@ -1,6 +1,6 @@
-import GridAction from "../GridAction";
+import Action from "./Action";
 
-export default class DeleteGridAction extends GridAction {
+export default class DeleteAction extends Action {
 	get defaultIcon() {
 		return 'delete';
 	}
@@ -8,5 +8,4 @@ export default class DeleteGridAction extends GridAction {
 	get defaultLabel() {
 		return 'Удалить запись';
 	}
-
 }

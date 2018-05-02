@@ -1,4 +1,4 @@
-@named('пользователь')
+@named('пользователь', true)
 @registerBundle('/')
 export default class AclUser extends PlatformSpecificModel {
 	@hidden @property first_name;
@@ -14,7 +14,7 @@ export default class AclUser extends PlatformSpecificModel {
 	@cellRenderer(CellRenderers.EmailCell)
 	@property email;
 
-	@rowLink
+	@cellRenderer(CellRenderers.RowLinkCell)
 	@property full_name = {
 		expr: `CONCAT(first_name, '<!>', last_name)`,
 

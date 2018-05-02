@@ -10,7 +10,7 @@ export default class ModelViewPage extends ViewPage {
 			return this.dataSource.name;
 		}
 
-		return this.model ? `Просмотр ${name.sin.gen} #${this.params.id}` : super.pageTitle;
+		return this.model ? `Просмотр ${name.gen} #${this.params.id}` : super.pageTitle;
 	}
 
 	async preparePage() {

@@ -22,9 +22,6 @@ import {
 import {Paper} from "material-ui";
 import Loader from "../../Loader";
 import GridActionColumn from "./GridAction/GridActionColumn";
-import EditGridAction from "./GridAction/Actions/EditGridAction";
-import DeleteGridAction from "./GridAction/Actions/DeleteGridAction";
-import GridAction from "./GridAction/GridAction";
 import GridCellRenderer from "./GridCellRenderer";
 
 class GridState {
@@ -38,6 +35,7 @@ export default class GridList extends ReactComponent {
 
 	@state rows = [];
 	@state columns = [];
+	@state actions = [];
 
 	@state gridState = GridState.LOADING;
 
@@ -67,10 +65,23 @@ export default class GridList extends ReactComponent {
 	@state pageSize = 1;
 	@state total = 0;
 
-	@asyncCatch async componentWillMount() {
-		await this.doLoad();
+	componentWillMount() {
+		this.gridState = GridState.FETCHING;
 
-		window.ggg = this;
+		this.columns = this.provider.fetchColumns();
+		this.actions = this.provider.fetchActions();
+
+		this.hiddenColumnNames = this.columns
+			.filter(c => c.hidden)
+			.map(c => c.name);
+
+		this.commitState();
+	}
+
+	@asyncCatch async componentDidMount() {
+		window._debugCurrentGrid = this;
+
+		await this.doFetch();
 	}
 
 	shouldComponentUpdate(newProps, newState) {
@@ -78,20 +89,6 @@ export default class GridList extends ReactComponent {
 			Object.equal(newProps, this.props) == false ||
 			Object.equal(newState, this.state) == false
 		);
-	}
-
-	async doLoad() {
-		this.gridState = GridState.LOADING;
-
-		// console.log('GridList:CWM');
-
-		this.columns = await this.provider.fetchColumns();
-
-		this.hiddenColumnNames = this.columns
-			.filter(c => c.hidden)
-			.map(c => c.name);
-
-		await this.doFetch();
 	}
 
 	get paging() {
@@ -102,9 +99,6 @@ export default class GridList extends ReactComponent {
 	}
 
 	async doFetch() {
-		this.gridState = GridState.FETCHING;
-		this.commitState();
-
 		this.rows = await this.provider.fetchData(this.filter, this.order, this.paging);
 		this.total = this.provider.lastTotal;
 
@@ -182,14 +176,6 @@ export default class GridList extends ReactComponent {
 		console.log(p);
 	}
 
-	editRowAction(p) {
-		return <EditGridAction   {...p} onExecute={p.row.editUrl} />;
-	}
-
-	deleteRowAction(p) {
-		return <DeleteGridAction {...p} onExecute={fn => this.onRemoveRowAction(p.row)} />;
-	}
-
 	render() {
 		if(this.isLoading) {
 			// console.log('GridList:Render LOADER');
@@ -246,12 +232,7 @@ export default class GridList extends ReactComponent {
 						/>
 					)}
 
-					<GridActionColumn children={[
-						...this.config.rowActions,
-
-						this.config.useEditRowAction   && (p => this.editRowAction(p)),
-						this.config.useDeleteRowAction && (p => this.deleteRowAction(p)),
-					]} />
+					<GridActionColumn children={this.actions} />
 
 					<ColumnChooser />
 					<PagingPanel

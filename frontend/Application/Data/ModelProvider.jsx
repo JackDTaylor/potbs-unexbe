@@ -8,6 +8,7 @@ export default class ModelProvider extends DataProvider {
 
 	async prepare() {
 		await super.prepare();
+
 		this.model = await GetModel(this.modelCode);
 	}
 

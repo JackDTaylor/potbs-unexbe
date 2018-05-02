@@ -1,58 +1,32 @@
-import ModelProvider from "../ModelProvider";
+import GridProvider from "./GridProvider";
 
-const columnSorter = (columnOrder, alwaysFirst = [ID], alwaysLast = []) => (a, b) => {
-	a = a.name;
-	b = b.name;
-
-	if(alwaysFirst.has(a) || alwaysLast.has(b) || columnOrder.has(b) == false) {
-		return -1;
+export default class ModelGridProvider extends GridProvider {
+	constructor(id, modelCode) {
+		super(id);
+		this.modelCode = modelCode;
 	}
 
-	if(alwaysFirst.has(b) || alwaysLast.has(a) || columnOrder.has(a) == false) {
-		return 1;
+	_queryMeta = {};
+
+	async prepare() {
+		await super.prepare();
+		this.model = await GetModel(this.modelCode);
 	}
 
-	return columnOrder.indexOf(a) - columnOrder.indexOf(b);
-};
-
-const mapToColumn = (property) => ({
-	name:       property.name,
-	title:      property.label,
-	renderer:   property.cellRenderer,
-
-	hidden:     property.hidden,
-	sortable:   property.queryable,
-	filterable: property.queryable,
-
-	__property: property,
-});
-
-export default class ModelGridProvider extends ModelProvider {
-	_queryMeta;
-
-	async fetchColumns() {
-		let columns = this.model.PropertiesByScope(Scope.LIST).map(this.mapToColumn);
-
-		columns.sort(columnSorter(this.model.GridConfig.columnOrder));
-
-		return columns;
+	get properties() {
+		return this.model.PropertiesByScope(Scope.LIST);
 	}
 
-	async fetchData(filter, order, paging) {
+	get columnOrder() {
+		return this.model.GridConfig.columnOrder;
+	}
+
+	fetchActions() {
+		return this.model.GridConfig.actions;
+	}
+
+	async queryData(filter, order, paging) {
 		this._queryMeta = {};
-
-		if(empty(filter)) {
-			filter = undefined;
-		}
-
-		if(empty(order)) {
-			order = undefined;
-		}
-
-		if(empty(paging)) {
-			paging = {};
-		}
-
 		return await this.model.Search({ filter, order, ...paging }, this._queryMeta);
 	}
 

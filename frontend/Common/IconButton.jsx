@@ -1,6 +1,8 @@
-import {IconButton as MuiIconButton} from "material-ui";
+import {IconButton as MuiIconButton, Tooltip} from "material-ui";
 
 export default class IconButton extends ReactComponent {
+	@prop tooltip;
+
 	get buttonProps() {
 		let props = this.props;
 
@@ -14,6 +16,12 @@ export default class IconButton extends ReactComponent {
 	}
 
 	render() {
-		return <MuiIconButton {...this.buttonProps} />;
+		let button = <MuiIconButton {...this.buttonProps} />;
+
+		if(this.tooltip) {
+			return <Tooltip title={this.tooltip}>{button}</Tooltip>;
+		}
+
+		return button;
 	}
 }

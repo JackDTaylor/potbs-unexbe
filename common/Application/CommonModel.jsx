@@ -2,6 +2,9 @@ import LinkManyToMany from "./Model/LinkManyToMany";
 import LinkManyToOne from "./Model/LinkManyToOne";
 import LinkOneToMany from "./Model/LinkOneToMany";
 
+/**
+ * @static {Noun} Name
+ */
 @named('объект')
 export default class CommonModel {
 	@abstract static Code;
@@ -13,7 +16,7 @@ export default class CommonModel {
 	}
 
 	get name() {
-		return this.constructor.Name.sin.nom.ucFirst() + ' #' + this.id;
+		return this.constructor.Name.nom.ucFirst() + ' #' + this.id;
 	}
 
 	static async Prepare() {

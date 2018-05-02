@@ -10,6 +10,9 @@ export default class EmailCell extends ButtonCell {
 	}
 
 	get buttonProps() {
-		return { target: '_blank' };
+		return {
+			target: '_blank',
+			tooltip: 'Написать письмо',
+		};
 	}
 }

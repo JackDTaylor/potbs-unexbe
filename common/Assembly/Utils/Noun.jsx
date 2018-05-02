@@ -1,9 +1,31 @@
 import {NounDeclension, NounPluralization} from "./Morphos/Morphos";
 
-global.NounDeclension = NounDeclension;
-global.NounPluralization = NounPluralization;
+/**
+ * @typedef {Object} NounCasesShort
+ * @property {String} nom Именительный
+ * @property {String} gen Родительный
+ * @property {String} dat Дательный
+ * @property {String} acc Винительный
+ * @property {String} abl Творительный
+ * @property {String} pre Предложный
+ */
 
-global.Noun = class Noun {
+/**
+ * @typedef {Object} NounCasesLong
+ * @property {String} nominative    Именительный
+ * @property {String} genitive      Родительный
+ * @property {String} dative        Дательный
+ * @property {String} accusative    Винительный
+ * @property {String} ablative      Творительный
+ * @property {String} prepositional Предложный
+ */
+
+/**
+ * Noun
+ * @global
+ */
+class Noun {
+	/** @type {NounCasesLong} */
 	single = {
 		ablative:      '',
 		accusative:    '',
@@ -13,6 +35,7 @@ global.Noun = class Noun {
 		prepositional: '',
 	};
 
+	/** @type {NounCasesLong} */
 	plural = {
 		ablative:      '',
 		accusative:    '',
@@ -52,6 +75,7 @@ global.Noun = class Noun {
 		}
 	}
 
+	/** @protected */
 	get(type) {
 		type = type.split(' ');
 		type[1] = type[1] == 'plural' ? type[1] : 'single';
@@ -59,6 +83,7 @@ global.Noun = class Noun {
 		return this[type[1]][type[0]];
 	}
 
+	/** @return {NounCasesShort} */
 	get sin() {
 		return {
 			nom: this.single.nominative,
@@ -70,6 +95,7 @@ global.Noun = class Noun {
 		}
 	}
 
+	/** @return {NounCasesShort} */
 	get plu() {
 		return {
 			nom: this.plural.nominative,
@@ -81,20 +107,24 @@ global.Noun = class Noun {
 		}
 	}
 
-	get nom() { return this.sin.nom; }
-	get gen() { return this.sin.gen; }
-	get dat() { return this.sin.dat; }
-	get acc() { return this.sin.acc; }
-	get abl() { return this.sin.abl; }
-	get pre() { return this.sin.pre; }
+	/** Именительный */ get nom() { return this.sin.nom; }
+	/** Родительный  */ get gen() { return this.sin.gen; }
+	/** Дательный    */ get dat() { return this.sin.dat; }
+	/** Винительный  */ get acc() { return this.sin.acc; }
+	/** Творительный */ get abl() { return this.sin.abl; }
+	/** Предложный   */ get pre() { return this.sin.pre; }
 
+	/** @protected */
 	get plain() {
 		return `\nsingle: ${Object.values(this.sin).join(',')}\nplural: ${Object.values(this.plu).join(',')}`;
 	}
-};
+}
+
+global.Noun = Noun;
+global.NounDeclension = NounDeclension;
+global.NounPluralization = NounPluralization;
 
 let array = (...a) => a;
-
 global.NounPluralization.__test = function() {
 	let test = (name, anim, res) => {
 		let fact = Object.values(NounPluralization.getCases(name, anim)).join(',');
@@ -135,7 +165,6 @@ global.NounPluralization.__test = function() {
 		test('корабль', false, array('корабли', 'кораблей', 'кораблям', 'корабли', 'кораблями', 'кораблях')),
 	].filter(x => x !== true);
 };
-
 global.NounDeclension.__test = function() {
 	let test = (name, anim, res) => {
 		let fact = Object.values(NounDeclension.getCases(name, anim)).join(',');
@@ -191,7 +220,6 @@ global.NounDeclension.__test = function() {
 		test('корабль', false, array('корабль', 'корабля', 'кораблю', 'корабль', 'кораблем', 'корабле')),
 	].filter(x => x !== true);
 };
-
 global.Noun.__test = function() {
 	return {
 		decl: NounDeclension.__test(),

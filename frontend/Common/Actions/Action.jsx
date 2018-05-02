@@ -1,8 +1,8 @@
 import {Tooltip} from "material-ui";
-import IconButton from "../../../IconButton";
-import Link from "../../../Link";
+import IconButton from "../IconButton";
+import Link from "../Link";
 
-export default class GridAction extends ReactComponent {
+export default class Action extends ReactComponent {
 	@prop icon;
 	@prop label;
 	@prop onExecute;
@@ -32,11 +32,9 @@ export default class GridAction extends ReactComponent {
 		}
 
 		return (
-			<Tooltip title={this.label || this.defaultLabel}>
-				<Link {...this.cls} href={this.onExecute}>
-					<IconButton>{icon(this.icon || this.defaultIcon)}</IconButton>
-				</Link>
-			</Tooltip>
+			<Link {...this.cls} href={this.onExecute}>
+				<IconButton tooltip={this.label || this.defaultLabel}>{icon(this.icon || this.defaultIcon)}</IconButton>
+			</Link>
 		);
 	}
 }

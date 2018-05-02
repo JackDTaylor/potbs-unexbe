@@ -35,7 +35,7 @@ window.GetModelMeta = async function GetModelMeta(path, type, Model, MetaClass) 
 
 				modelMetas[key] = new Metadata(Model);
 			} else {
-				modelMetas[key] = new class extends MetaClass {};
+				modelMetas[key] = new (class extends MetaClass {})(Model);
 			}
 
 			if(modelMetas[key] instanceof MetaClass == false) {

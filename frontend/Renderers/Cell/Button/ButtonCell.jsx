@@ -1,5 +1,6 @@
 import AbstractCell from "../AbstractCell";
 import Button from "../../../Common/Button";
+import {Tooltip, Typography} from "material-ui";
 
 export default class ButtonCell extends AbstractCell {
 	get buttonAction() {
