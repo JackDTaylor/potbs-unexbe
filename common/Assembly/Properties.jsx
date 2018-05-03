@@ -120,7 +120,7 @@ global.PropertyDescriptor = class PropertyDescriptor {
 	}
 
 	get detailRenderer() {
-		return this.detailRendererOverride || this.type.detailRenderer || this.cellRendererCode;
+		return this.detailRendererOverride || this.type.detailRenderer || this.cellRenderer;
 	}
 
 	toJSON() {

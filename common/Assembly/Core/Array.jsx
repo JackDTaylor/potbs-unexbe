@@ -86,6 +86,29 @@ arrayFn('unique', function() {
 });
 
 /** @class Array
+ *  @property reorder */
+arrayFn('reorder', function(getter, newOrder = [], alwaysFirst = [], alwaysLast = []) {
+	let result = [...this];
+
+	result.sort((a, b) => {
+		a = getter(a);
+		b = getter(b);
+
+		if(alwaysFirst.has(a) || alwaysLast.has(b) || newOrder.has(b) == false) {
+			return -1;
+		}
+
+		if(alwaysFirst.has(b) || alwaysLast.has(a) || newOrder.has(a) == false) {
+			return 1;
+		}
+
+		return newOrder.indexOf(a) - newOrder.indexOf(b);
+	});
+
+	return result;
+});
+
+/** @class Array
  *  @property sum */
 arrayGetter('sum', function() {
 	return this.reduce((p,c) => p+c, 0);
@@ -95,4 +118,16 @@ arrayGetter('sum', function() {
  *  @property avg */
 arrayGetter('avg', function() {
 	return this.length > 0 ? this.reduce((p,c) => p+c, 0) / this.length : 0;
+});
+
+/** @class Array
+ *  @property min */
+arrayGetter('min', function() {
+	return this.length > 0 ? this.reduce((min, val) => val < min ? val : min, this[0]) : undefined;
+});
+
+/** @class Array
+ *  @property max */
+arrayGetter('max', function() {
+	return this.length > 0 ? this.reduce((max, val) => val > max ? val : max, this[0]) : undefined;
 });

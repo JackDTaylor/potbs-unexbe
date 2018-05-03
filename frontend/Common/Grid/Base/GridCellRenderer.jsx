@@ -11,7 +11,7 @@ export default class GridCellRenderer extends ReactComponent {
 	get embeddedContents() {
 		const Renderer = GetRenderer(this.column.renderer);
 
-		return <Renderer {...this.props} />;
+		return <Renderer dataSource={this.row} property={this.column} value={this.props.value} />;
 	}
 
 	render() {

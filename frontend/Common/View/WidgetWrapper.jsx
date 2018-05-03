@@ -5,7 +5,9 @@ import {
 import WidgetHandle from "./WidgetHandle";
 
 export default class WidgetWrapper extends ReactComponent {
+	@prop dataSource;
 	@prop widget;
+
 	render() {
 		if(!this.widget) {
 			return '[no widget provided]';
@@ -28,7 +30,7 @@ export default class WidgetWrapper extends ReactComponent {
 						)}
 
 						<TableRow>
-							<TableCell>{RenderComponent(this.widget)}</TableCell>
+							<TableCell className="content-cell">{RenderComponent({ ...this.widget, dataSource: this.dataSource })}</TableCell>
 						</TableRow>
 					</TableBody>
 				</Table>

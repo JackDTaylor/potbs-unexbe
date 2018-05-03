@@ -94,14 +94,35 @@ class ReactComponent extends React.Component {
 		};
 	}
 
-	// noinspection JSDuplicatedDeclaration
-	componentWillMount() {}                  // noinspection JSDuplicatedDeclaration
-	componentDidMount() {}                   // noinspection JSDuplicatedDeclaration
-	componentWillReceiveProps(){}            // noinspection JSDuplicatedDeclaration
-	// shouldComponentUpdate() { return true; } // noinspection JSDuplicatedDeclaration
-	componentWillUpdate() {}                 // noinspection JSDuplicatedDeclaration
-	componentDidUpdate() {}                  // noinspection JSDuplicatedDeclaration
-	componentWillUnmount() {}
+	_subscriptions = [];
+
+	subscribe(observable, handler = null) {
+		if(!observable || !observable.$$observable) {
+			console.warn('Value you\'re trying to subscribe to is not an observable');
+			return;
+		}
+
+		if(!handler) {
+			if(this[observable.name]) {
+				handler = (...args) => this[observable.name](...args);
+			} else {
+				console.warn(`No handler was provided or found for subscribing to ${observable.name} in ${this.constructor.name}`);
+				handler = fn => {};
+			}
+		}
+
+		this._subscriptions.push(observable(handler));
+	}
+
+	componentWillMount() {}
+	componentDidMount() {}
+	componentWillReceiveProps(){}
+	componentWillUpdate() {}
+	componentDidUpdate() {}
+
+	componentWillUnmount() {
+		this._subscriptions.forEach(unsubscribe => unsubscribe());
+	}
 
 	constructor(...args) {
 		super(...args);

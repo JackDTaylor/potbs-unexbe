@@ -13,6 +13,10 @@ export default class ViewProvider extends DataProvider {
 		return [];
 	}
 
+	get columnWidths() {
+		return [];
+	}
+
 	/**
 	 * Fetches the widgets
 	 * @param dataSource
@@ -36,5 +40,14 @@ export default class ViewProvider extends DataProvider {
 	 */
 	fetchActions(dataSource = {}) {
 		return this.actions;
+	}
+
+	/**
+	 * Fetches the column widths
+	 * @param dataSource
+	 * @return {[number,number,number]}
+	 */
+	fetchColumnWidths(dataSource = {}) {
+		return this.columnWidths;
 	}
 }

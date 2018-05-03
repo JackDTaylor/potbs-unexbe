@@ -4,8 +4,6 @@ export default class WidgetHandle extends ReactComponent {
 	@prop children;
 
 	render() {
-		console.log(this.children);
-
 		return (
 			<div {...this.cls}>
 				<ContextIconButton icon={icon('menu')}>

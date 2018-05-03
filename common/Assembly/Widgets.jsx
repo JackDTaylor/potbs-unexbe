@@ -1,5 +1,6 @@
 const utils = _decoratorUtils;
 
+global.column  = column => defineKey('column',  column);
 global.labeled = label  => defineKey('label',  label);
 global.widget =  type   => {
 	return function(p, f, d) {

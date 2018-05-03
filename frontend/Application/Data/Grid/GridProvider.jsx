@@ -2,24 +2,6 @@ import DataProvider from "../DataProvider";
 
 export default class GridProvider extends DataProvider {
 	/** @protected */
-	getColumnSorter(columnOrder, alwaysFirst = [ID], alwaysLast = []) {
-		return (a, b) => {
-			a = a.name;
-			b = b.name;
-
-			if(alwaysFirst.has(a) || alwaysLast.has(b) || columnOrder.has(b) == false) {
-				return -1;
-			}
-
-			if(alwaysFirst.has(b) || alwaysLast.has(a) || columnOrder.has(a) == false) {
-				return 1;
-			}
-
-			return columnOrder.indexOf(a) - columnOrder.indexOf(b);
-		};
-	}
-
-	/** @protected */
 	mapToColumn(property) {
 		return {
 			name:       property.name,
@@ -60,9 +42,7 @@ export default class GridProvider extends DataProvider {
 	}
 
 	prepareColumns(columns) {
-		columns.sort(this.getColumnSorter(this.columnOrder));
-
-		return columns;
+		return columns.reorder(x => x.name, this.columnOrder, [ID], []);
 	}
 
 	fetchColumns() {

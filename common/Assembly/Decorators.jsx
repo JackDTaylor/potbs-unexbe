@@ -28,11 +28,22 @@ const utils = _decoratorUtils;
 
 global.defineKey = (k, v) => utils.valueDecorator(value => utils.defineKey(k, value, v));
 
-global.observable = function observable() {
-	const handlers = [];
+global.observable = function observable(prototype, field) {
+	let handlers = [];
+
 	const observableFn = function(handler) {
+		if(handler instanceof Function == false) {
+			console.warn('Trying to subscribe to observable with a non-function. If you\'re trying to invoke it, use .invoke() or .invokeAsync() instead');
+			return;
+		}
+
 		handlers.push(handler);
+
+		return fn => observableFn.unsubscribe(handler);
 	};
+
+	Object.defineProperty(observableFn, 'name', {value: field});
+	Object.defineProperty(observableFn, '$$observable', {value: true});
 
 	observableFn.invoke = function() {
 		handlers.forEach(handler => handler.apply(this, arguments));
@@ -42,6 +53,10 @@ global.observable = function observable() {
 		for(let i = 0; i < handlers.length; i++) {
 			await handlers[i].apply(this, arguments);
 		}
+	};
+
+	observableFn.unsubscribe = function(handler) {
+		handlers = handlers.filter(h => h != handler);
 	};
 
 	return {

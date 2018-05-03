@@ -24,6 +24,10 @@ export default class ModelViewProvider extends ViewProvider {
 		return this.model.ViewConfig.actions;
 	}
 
+	get columnWidths() {
+		return this.model.ViewConfig.columnWidths || super.columnWidths;
+	}
+
 	async fetchEntry(id) {
 		return await this.model.FindById(id);
 	}

@@ -1,7 +1,15 @@
 import {Typography} from "material-ui";
 
 export default class Header extends ReactComponent {
-	@prop variant;
+	@prop small;
+
+	get variant() {
+		if(this.props.variant) {
+			return this.props.variant;
+		}
+
+		return this.small ? 'title' : 'headline';
+	}
 
 	render() {
 		return (

@@ -1,4 +1,4 @@
-import BaseWidget from "../Common/View/Widget/BaseWidget";
+import BaseWidget from "../Common/Widget/BaseWidget";
 import Action from "../Common/Action/Action";
 import DeleteAction from "../Common/Action/DeleteAction";
 import EditAction from "../Common/Action/EditAction";
@@ -61,9 +61,26 @@ class FormConfig extends FrontendModelMeta {
 class ViewConfig extends FrontendModelMeta {
 	hideDeleteAction = true;
 
+	columnWidths = [3,2,2];
+
+	get widgetOrder() {
+		return ['defaultWidget'];
+	}
+
 	get widgets() {
 		return class {
 			@widget(BaseWidget) defaultWidget;
+
+			constructor() {
+				Object.defineProperty(this, 'defaultWidget', {
+					value: {
+						...{type: BaseWidget, label: 'Основное'},
+						...this.defaultWidget,
+					}
+				});
+
+				console.log(this.defaultWidget);
+			}
 		};
 	};
 
@@ -85,7 +102,7 @@ class ViewConfig extends FrontendModelMeta {
 			widgetConfig[key] = widget;
 		});
 
-		return Object.values(widgetConfig);
+		return Object.values(widgetConfig).reorder(x => x.name, this.widgetOrder);
 	}
 }
 

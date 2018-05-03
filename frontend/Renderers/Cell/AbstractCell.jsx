@@ -1,6 +1,5 @@
 import Loading from "../../Common/Typography/Loading";
 import Empty from "../../Common/Typography/Empty";
-import ReadableList from "../../Common/ReadableList";
 import ErrorSign from "../../Common/Typography/ErrorSign";
 
 const NO_VALUE = Symbol('NO_VALUE');
@@ -8,16 +7,12 @@ const NO_VALUE = Symbol('NO_VALUE');
 export default class AbstractCell extends ReactComponent {
 	static CssClasses = ['Cell'];
 
+	@prop dataSource;
+	@prop property;
 	@prop value;
-	@prop row;
-	@prop column;
 
 	@state asyncValue = NO_VALUE;
 	asyncPromise = null;
-
-	get __property() {
-		return this.column.__property;
-	}
 
 	async waitAsyncValue(value) {
 		// await delay(1000);

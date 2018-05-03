@@ -37,6 +37,8 @@ export default class FrontendAppController {
 	layout = null;
 
 	@observable onNavigate;
+	@observable onResize;
+	@observable onKeyPress;
 
 	errorEndpoint = new Endpoint('ErrorPage');
 
@@ -59,9 +61,25 @@ export default class FrontendAppController {
 	}
 
 	async initialize() {
-		window.onpopstate = ev => this.route(location.href);
+		let $window = jQuery(window);
+
+		$window.on('popstate', (...args) => this.route(location.href));
+		$window.on('resize',   (...args) => this.onResizeHandler(...args));
+		$window.on('keypress', (...args) => this.onKeyPressHandler(...args));
 
 		await this.route(location.href);
+	}
+
+	resizeDebounceTimeout = null;
+
+	onResizeHandler() {
+		clearTimeout(this.resizeDebounceTimeout);
+
+		this.resizeDebounceTimeout = setTimeout(fn => this.onResize.invoke(), 200);
+	}
+
+	onKeyPressHandler() {
+		console.log('on key press', ...arguments);
 	}
 
 	changeHistoryState(url, push = false) {

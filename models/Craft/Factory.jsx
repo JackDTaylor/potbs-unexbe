@@ -1,6 +1,6 @@
 @named('здание')
 @registerBundle('/craft/factory')
 export default class CraftFactory extends PlatformSpecificModel {
-	@attachedToWidget('recipes')
+	@attachedToWidget(false)
 	@property resources;
 }

@@ -62,7 +62,7 @@ export default class GridList extends ReactComponent {
 		}
 	});
 
-	@state pageSize = 1;
+	@state pageSize = 10;
 	@state total = 0;
 
 	componentWillMount() {
