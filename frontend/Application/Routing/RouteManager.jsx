@@ -2,6 +2,8 @@ import Endpoint from "../Endpoint/Endpoint";
 import Redirect from "../Endpoint/Redirect";
 import Route from "./Route";
 import Alias from "../Endpoint/Alias";
+import ModelCreateEndpoint from "../Endpoint/Model/ModelCreateEndpoint";
+import ModelEditEndpoint from "../Endpoint/Model/ModelEditEndpoint";
 import ModelGridEndpoint from "../Endpoint/Model/ModelGridEndpoint";
 import ModelViewEndpoint from "../Endpoint/Model/ModelViewEndpoint";
 
@@ -43,9 +45,9 @@ class RouteManager {
 	modelBundle(url, modelCode) {
 		this.page(url, {
 			'/':                  new ModelGridEndpoint(modelCode),
-			'/add':               new /*ModelCreate*/Endpoint(),
+			'/add':               new ModelCreateEndpoint(modelCode),
 			'/{id:numeric}':      new ModelViewEndpoint(modelCode),
-			'/{id:numeric}/edit': new /*ModelEdit*/Endpoint(),
+			'/{id:numeric}/edit': new ModelEditEndpoint(modelCode),
 		});
 	}
 

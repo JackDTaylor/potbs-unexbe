@@ -25,7 +25,10 @@ export default class FormPage extends Page {
 
 	renderContents() {
 		return (
-			<b>Form {JSON.stringify(this.fields)}</b>
+			<FormLayout
+				provider={this.formProvider}
+				dataSource={this.dataSource}
+			/>
 		);
 	}
 }
