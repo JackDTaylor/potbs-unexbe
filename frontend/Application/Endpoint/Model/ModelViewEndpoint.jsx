@@ -1,11 +1,13 @@
 import Endpoint from "../Endpoint";
-import ModelViewProvider from "../../Data/View/ModelViewProvider";
+import ModelSource from "../../Data/Source/ModelSource";
+import ViewProvider from "../../Data/Provider/Record/ViewProvider";
 
 export default class ModelViewEndpoint extends Endpoint {
 
 	constructor(modelCode) {
-		let viewProvider = new ModelViewProvider(`Bundle:${modelCode}`, modelCode);
+		let dataSource = new ModelSource(modelCode);
+		let provider = new ViewProvider(`Bundle:${modelCode}`, dataSource);
 
-		super('Model/ViewPage', { viewProvider, modelCode });
+		super('ViewPage', { provider, modelCode });
 	}
 }

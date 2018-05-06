@@ -1,3 +1,7 @@
+global.decoratedValue = function(p, f, d, def = undefined) {
+	return p[f] || _decoratorUtils.decoratedValue(d, def);
+};
+
 global._decoratorUtils = {
 	defineKey(key, container, value = {}) {
 		container[key] = container[key] || value;
@@ -11,8 +15,8 @@ global._decoratorUtils = {
 		return value || defaultValue;
 	},
 
-	processValue(descriptor, fn, params) {
-		const value = _decoratorUtils.decoratedValue(descriptor);
+	processValue(proto, field, descriptor, fn, params) {
+		const value = decoratedValue(proto, field, descriptor);
 
 		fn(value, ...params);
 
@@ -20,7 +24,7 @@ global._decoratorUtils = {
 	},
 
 	valueDecorator(fn) {
-		return (p, f, d) => _decoratorUtils.processValue(d, fn, [p,f,d]);
+		return (p, f, d) => _decoratorUtils.processValue(p, f, d, fn, [p,f,d]);
 	}
 };
 

@@ -114,7 +114,7 @@ export default class FrontendModel extends CommonModel {
 
 		let properties = this.constructor.PropertiesByFilter(propertyFilter).filter(p => p.widget == name);
 
-		widgetConfig.propertyProvider.registerDataSource(this);
+		widgetConfig.propertyProvider.registerRecord(this);
 		widgetConfig.propertyProvider.registerProperties(properties);
 
 		return widgetConfig;

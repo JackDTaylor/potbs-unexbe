@@ -6,6 +6,14 @@ module.exports = {
 		'react': 'React',
 		'react-dom': 'ReactDOM',
 		'material-ui': 'MaterialUI',
+
+		'react-swipeable-views': 'SwipeableViews',
+		'react-popper': 'ReactPopper',
+
+		'material-ui/colors':      'MaterialUI_colors',
+		'material-ui/styles':      'MaterialUI_styles',
+		'material-ui/transitions': 'MaterialUI_transitions',
+
 		'@devexpress/dx-react-grid': 'DxReactGrid',
 		'@devexpress/dx-react-grid-material-ui': 'DxReactGridMaterialUi',
 	},

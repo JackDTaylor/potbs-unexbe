@@ -10,7 +10,7 @@ Object.without = function(obj, keys) {
 	return obj;
 };
 
-Object.equal = function(a, b, depth = 64, keys = []) {
+Object.equal = function(a, b, depth = 64, seenObjects = []) {
 	const aIsObject = a && typeof a == 'object';
 	const bIsObject = b && typeof b == 'object';
 
@@ -18,6 +18,13 @@ Object.equal = function(a, b, depth = 64, keys = []) {
 		// At least one of the values is scalar -- use regular compare
 		return a === b;
 	}
+
+	if(seenObjects.has(a) || seenObjects.has(b)) {
+		// Cyclic link
+		return a === b;
+	}
+
+	seenObjects.push(a, b);
 
 	if(a.constructor != b.constructor) {
 		// Constructor differs
@@ -38,13 +45,13 @@ Object.equal = function(a, b, depth = 64, keys = []) {
 			return true;
 		}
 
-		const aKeyIsObject = a[key] && a[key] instanceof Object;
-		const bKeyIsObject = b[key] && b[key] instanceof Object;
+		const aKeyIsObject = a[key] && a[key] instanceof Object && a[key].constructor === Object;
+		const bKeyIsObject = b[key] && b[key] instanceof Object && b[key].constructor === Object;
 
 		if(depth > 0 && aKeyIsObject && bKeyIsObject) {
 			// Use recursive comparison.
 			// Notice `!` in front of call -- we should return `true` if objects are _different_.
-			return !(Object.equal(a[key], b[key], depth - 1, keys.concat([key])));
+			return !(Object.equal(a[key], b[key], depth - 1, seenObjects));
 		}
 
 		return a[key] !== b[key];

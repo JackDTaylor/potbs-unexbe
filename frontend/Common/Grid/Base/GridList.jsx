@@ -99,8 +99,8 @@ export default class GridList extends ReactComponent {
 	}
 
 	async doFetch() {
-		this.rows = await this.provider.fetchData(this.filter, this.order, this.paging);
-		this.total = this.provider.lastTotal;
+		this.rows = await this.provider.fetchRecords(this.filter, this.order, this.paging);
+		this.total = this.provider.fetchLastTotal();
 
 		this.gridState = GridState.READY;
 		this.commitState();

@@ -99,6 +99,39 @@
   font-size: 10px;
   opacity: 0.25;
 }
+.dmi-form-layout .dmi-field {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+}
+.dmi-select-field-input {
+  flex-wrap: wrap;
+}
+.dmi-select-field-input > div[role="button"] {
+  margin: 0 2px 4px;
+}
+.dmi-select-field-input > div[role="button"] > span {
+  padding-right: 5px;
+}
+.dmi-select-field-input > div[role="button"] > span > .material-icons.remove-button {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  font-size: 16px;
+  padding: 3px;
+  box-sizing: content-box;
+  margin-left: 5px;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+.dmi-select-field-input > div[role="button"] > span > .material-icons.remove-button:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+.dmi-select-field-input > div[role="button"] > span > .material-icons.remove-button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.dmi-select-field-input > input {
+  min-width: 100px;
+}
 a.dmi.dmi-link:link,
 a.dmi.dmi-link:visited {
   color: #1968aa;

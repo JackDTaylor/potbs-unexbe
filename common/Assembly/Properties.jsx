@@ -13,9 +13,10 @@ global.abstract = function(proto, field) {
 	};
 };
 
-global.scoped            = scope  => defineKey('scope',  scope);
-global.attachedToWidget  = widget => defineKey('widget',  widget);
-global.type              = type   => defineKey('type', type);
+global.type              = type    => defineKey('type', type);
+global.scoped            = scope   => defineKey('scope', scope);
+global.defaultFormTab    = formTab => defineKey('defaultFormTab', formTab);
+global.attachedToWidget  = widget  => defineKey('widget', widget);
 global.secure            = defineKey('secure', true);
 global.hidden            = defineKey('hidden', true);
 
@@ -63,6 +64,8 @@ global.PropertyDescriptor = class PropertyDescriptor {
 	cellRendererOverride = null;
 	fieldRendererOverride = null;
 	detailRendererOverride = null;
+
+	defaultFormTab = 'Основное';
 
 	widget = 'defaultWidget';
 

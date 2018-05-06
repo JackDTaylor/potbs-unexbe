@@ -2,7 +2,7 @@ import WidgetWrapper from "./WidgetWrapper";
 import ColumnLayout from "../ColumnLayout";
 
 export default class WidgetLayout extends ColumnLayout {
-	@prop dataSource;
+	@prop record;
 	@prop widgets;
 
 	get widgetColumns() {
@@ -29,7 +29,7 @@ export default class WidgetLayout extends ColumnLayout {
 
 	renderColumn(i) {
 		return this.widgetColumns[i].map(widget => (
-			<WidgetWrapper key={widget.name} widget={widget} dataSource={this.dataSource} />
+			<WidgetWrapper key={widget.name} widget={widget} record={this.record} />
 		));
 	}
 }

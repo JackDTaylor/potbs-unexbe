@@ -16,7 +16,6 @@ RestartOnCompile.prototype.apply = function(compiler) {
 	});
 };
 
-
 module.exports = {
 	...webpackSharedConfig,
 	entry: `${baseDir}/backend.jsx`,
@@ -29,7 +28,10 @@ module.exports = {
 
 	target: 'node',
 
-	externals: [nodeExternals()],
+	externals: [
+		webpackSharedConfig.externals,
+		nodeExternals()
+	],
 	watchOptions: {
 		ignored: [`../node_modules/`],
 	},

@@ -79,7 +79,7 @@ export default class FrontendAppController {
 	}
 
 	onKeyPressHandler() {
-		console.log('on key press', ...arguments);
+		// console.log('on key press', ...arguments);
 	}
 
 	changeHistoryState(url, push = false) {

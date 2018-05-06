@@ -47,16 +47,73 @@ class EmbeddedStorageNode {
 	}
 }
 
+class StorageUpdateSession {
+	promise;
+	storage;
+	operations = [];
+
+	constructor(storage) {
+		this.storage = storage;
+		this.promise = delay(0).then(fn => this.resolve());
+	}
+
+	schedule(operation) {
+		this.operations.push(operation);
+	}
+
+	resolve() {
+		const nodeDb = {};
+		const nodeRoots = {};
+
+		// Calculate new node roots
+		this.operations.forEach(operation => {
+			let oldNode = operation.oldNode;
+			let newNode = operation.newNode;
+
+			nodeDb[oldNode.key] = oldNode;
+			nodeDb[newNode.key] = newNode;
+
+			nodeRoots[newNode.key] = operation.container;
+
+			if(oldNode.key in nodeRoots == false) {
+				nodeRoots[oldNode.key] = this.storage.root;
+			}
+		});
+
+		// Apply new node roots
+		Object.keys(nodeRoots).forEach(key => {
+			nodeDb[key].mount(nodeRoots[key]);
+		});
+
+		this.operations.forEach(op => op.done());
+
+		this.storage.endUpdateSession();
+	}
+}
+
 class EmbeddedStorage {
 	root;
 	storage = {};
+
+	activeUpdateSession = null;
 
 	constructor() {
 		this.root = document.createElement('div');
 		this.root.id = 'embeddedRoot';
 
-		console.log(document.body);
 		document.body.appendChild(this.root);
+	}
+
+	startUpdateSession(operation) {
+		if(this.activeUpdateSession == null) {
+			this.activeUpdateSession = new StorageUpdateSession(this);
+		}
+
+		this.activeUpdateSession.schedule(operation);
+	}
+
+	endUpdateSession() {
+		this.activeUpdateSession = null;
 	}
 
 	unregisterNode(node) {
@@ -93,9 +150,19 @@ export default class Embedded extends React.Component {
 	}
 
 	shouldComponentUpdate(newProps) {
-		this.node.swapWith(this.getNodeForProps(newProps));
+		if(Object.equal(newProps.code, this.props.code)) {
+			return false;
+		}
 
-		this.props = newProps;
+		this.constructor.Storage.startUpdateSession({
+			oldNode: this.node,
+			newNode: this.getNodeForProps(newProps),
+			container: this.container,
+
+			// Not necessarily needed, but just in case
+			done: fn => this.props = newProps
+		});
+
 		return false;
 	}
 
