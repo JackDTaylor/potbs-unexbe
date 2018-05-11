@@ -35,8 +35,17 @@ export default class CommonModel {
 			if(property.link) {
 				switch(property.link.type) {
 					case Link.M2M: property.link = new LinkManyToMany(propertyName, property.link); break;
-					case Link.M2O: property.link = new LinkManyToOne (propertyName, property.link); break;
-					case Link.O2M: property.link = new LinkOneToMany (propertyName, property.link); break;
+					case Link.M2O: property.link = new LinkManyToOne(propertyName, property.link); break;
+					case Link.O2M: property.link = new LinkOneToMany(propertyName, property.link); break;
+				}
+
+				if(propertyName != property.link.fullKey) {
+					// Copy shared props from full property
+					const fullProperty = this.Layout[property.link.fullKey];
+
+					if(fullProperty) {
+						property.linkTo(fullProperty);
+					}
 				}
 			}
 
@@ -79,8 +88,7 @@ export default class CommonModel {
 				configurable:true,
 			};
 
-			// If readonly or virtual
-			if(property.writable == false) {
+			if(property.readonly) {
 				desc.set = function() {
 					throw new Error(`Property '${propertyName}' is readonly`);
 				}

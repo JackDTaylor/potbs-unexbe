@@ -84,6 +84,12 @@ global.PropertyType.MODELS = class MODELS extends PropertyType.GENERIC {
 global.PropertyType.MODEL_ID = class MODEL_ID extends PropertyType.GENERIC {
 	static PrimitiveType = Type.NUMBER;
 	static ParamNames = ['code'];
+
+	static FieldRenderer  = FieldRenderers.SelectField;
+
+	get isMultipleSelect() {
+		return false;
+	}
 };
 
 /**
@@ -93,4 +99,10 @@ global.PropertyType.MODEL_ID = class MODEL_ID extends PropertyType.GENERIC {
 global.PropertyType.MODEL_IDS = class MODEL_IDS extends PropertyType.GENERIC {
 	static PrimitiveType = Type.ARRAY;
 	static ParamNames = ['code'];
+
+	static FieldRenderer  = FieldRenderers.SelectField;
+
+	get isMultipleSelect() {
+		return true;
+	}
 };

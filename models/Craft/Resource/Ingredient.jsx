@@ -3,6 +3,7 @@ global.asyncProp = function(p, f, d) {
 };
 
 @registerBundle('/craft/resource-ingredient')
+@named('Ингредиент')
 export default class CraftResourceIngredient extends PlatformSpecificModel {
 
 

@@ -14,17 +14,20 @@ import * as MaterialUI_transitions from "material-ui/transitions";
 import * as ReactPopper from "react-popper";
 import * as DxReactGrid from "@devexpress/dx-react-grid";
 import * as DxReactGridMaterialUi from "@devexpress/dx-react-grid-material-ui";
+import * as MaterialUI_pickers from "material-ui-pickers";
+import MaterialUI_pickersUtil from 'material-ui-pickers/utils/date-fns-utils';
 
 window.React = React;
 window.ReactDOM = ReactDOM;
 window.Bluebird = Bluebird;
 window.jQuery = jQuery;
 
-window.MaterialUI = MaterialUI;
-
+window.MaterialUI             = MaterialUI;
 window.MaterialUI_colors      = MaterialUI_colors;
 window.MaterialUI_styles      = MaterialUI_styles;
 window.MaterialUI_transitions = MaterialUI_transitions;
+window.MaterialUI_pickers     = MaterialUI_pickers;
+window.MaterialUI_pickersUtil = MaterialUI_pickersUtil;
 
 window.SwipeableViews = SwipeableViews;
 window.ReactPopper = ReactPopper;

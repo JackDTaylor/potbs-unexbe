@@ -26,6 +26,14 @@ export class BasicFormIntegration extends Integration {
 	get component() {
 		return Form;
 	}
+
+	get properties() {
+		return [];
+	}
+
+	get fieldOrder() {
+		return [];
+	}
 }
 
 export class BasicViewIntegration extends Integration {

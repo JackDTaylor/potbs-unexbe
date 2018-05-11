@@ -1,7 +1,7 @@
-import Field from "./Field";
+import Control from "./Control";
 import FormContext from "./FormContext";
 
-export default class Form extends Field {
+export default class Form extends Control {
 	@prop isArray;
 
 	get defaultControlledValue() {
@@ -13,10 +13,20 @@ export default class Form extends Field {
 	}
 
 	contextualRender() {
+		console.log('new formState:', this.value);
 		return (
 			<div {...this.cls}>
 				<FormContext.Provider value={this}>
-					{this.renderForm()}
+					<pre>{
+						JSON.stringify(this.value)
+							.replace(/,"/g, ',\n"')
+							.replace(/^{/g, '')
+							.replace(/}$/g, '')
+					}</pre>
+					<hr />
+					<ErrorBoundary>
+						{this.renderForm()}
+					</ErrorBoundary>
 				</FormContext.Provider>
 			</div>
 		);

@@ -47,9 +47,10 @@ export default class FrontendAppController {
 		{url: '/craft/resource',            icon: 'stars',    title: 'Ресурсы'},
 		{url: '/craft/resource-ingredient', icon: 'share',    title: 'Ингредиенты'},
 		{url: '/craft/factory',             icon: 'industry', title: 'Постройки'},
+		{url: '/region/city',               icon: 'map',      title: 'Города'},
 		{url: '/craft/project',             icon: 'project',  title: 'Проекты'},
 
-		{url: '/settings',                  icon: 'settings', title: 'Настройки' },
+		{url: '/dmi',                       icon: 'settings', title: 'DMI', blank: true, itemList: 1 },
 	];
 
 	constructor() {}

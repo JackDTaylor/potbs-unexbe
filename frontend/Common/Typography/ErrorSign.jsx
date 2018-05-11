@@ -16,9 +16,15 @@ export default class ErrorSign extends ReactComponent {
 	}
 
 	render() {
+		let tooltip = this.errorMessage;
+
 		return (
 			<Typography {...this.cls} variant="caption">
-				<Tooltip title={this.errorMessage} children={icon('error', 'error')} />
+				{tooltip ? (
+					<Tooltip title={tooltip} children={icon('error', 'error')} />
+				) : (
+					icon('error', 'error')
+				)}
 
 				{this.props.children || '(ошибка)'}
 			</Typography>

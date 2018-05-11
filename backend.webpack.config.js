@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const nodeExternals = require('webpack-node-externals');
 const webpackSharedConfig = require("./utils/webpack-shared-config");
+const restrictFromUsage = require("./utils/restrict-from-usage").restrictFromUsage;
 const UpgradeBuildNumber = require("./utils/version-plugin").UpgradeBuildNumber;
 const WatchExternalFilesPlugin = require('webpack-watch-files-plugin').default;
 
@@ -30,7 +31,8 @@ module.exports = {
 
 	externals: [
 		webpackSharedConfig.externals,
-		nodeExternals()
+		restrictFromUsage('./frontend/', 'backend', 'global'),
+		nodeExternals(),
 	],
 	watchOptions: {
 		ignored: [`../node_modules/`],

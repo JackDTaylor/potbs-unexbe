@@ -1,9 +1,11 @@
-import Field from "./Field";
-import {AppBar, Divider, Paper, Tab, Tabs} from "material-ui";
+import Control from "./Control";
+import {Paper} from "material-ui";
 import Button from "../Button/Button";
-import SelectField from "./Fields/SelectField";
-import IntegrationReactSelect from "./Fields/ReactSelect/ReactSelectMUI";
-import ReactSelect from 'react-select';
+import SelectControl from "./Controls/SelectControl";
+import TabBody from "../Tab/TabBody";
+import TabLayout from "../Tab/TabLayout";
+import ModelSource from "../../Application/Data/Source/ModelSource";
+import FieldSeparator from "./FieldSeparator";
 
 export default class FormLayout extends ReactComponent {
 	@prop provider;
@@ -13,6 +15,23 @@ export default class FormLayout extends ReactComponent {
 
 	submit() {
 		console.warn('submit');
+	}
+
+	componentWillMount() {
+		this.cityDataSource = new ModelSource('Region/City');
+
+		let formState = {};
+
+		if(this.record) {
+			this.provider.properties.forEach(property => {
+				if(property.hidden == false) {
+					formState[property.name] = this.record[property.name];
+				}
+			});
+		}
+
+		console.log(formState);
+		this.formState = formState;
 	}
 
 	get wire() {
@@ -25,60 +44,72 @@ export default class FormLayout extends ReactComponent {
 		}
 	}
 
-	get wireTabs() {
-		return {
-			value: this.currentTab,
-			onChange: (ev, v) => this.currentTab = v
-		}
-	}
-
-	get wireTabViews() {
-		return {
-			index: this.currentTab,
-			onChangeIndex: v => this.currentTab = v
-		}
-	}
-
-	@state currentTab = 0;
-
 	render() {
 		const name = this.provider.id;
 		const FormCls = this.provider.formComponent;
+
+		const tabs = this.provider.tabs;
 
 		return (
 			<div {...this.cls}>
 				<FormCls name={name} {...this.wire} onSubmit={fn => this.submit()}>
 					<Paper>
-						<Tabs {...this.wireTabs} indicatorColor="primary" textColor="primary" scrollable scrollButtons="auto">
-							<Tab label="Основное" />
-							<Tab label="Рецепты" />
-							<Tab label="Прочее" />
-						</Tabs>
-						<Divider  />
-						<div style={{marginTop: '1px', padding: '1em 1.5em'}}>
-							<SwipeableViews axis="x" {...this.wireTabViews}>
-								<div>
-									<Field name="Название" multiline />
-									<br />
-									<Field name="Владелец" />
-									<br />
-									<SelectField name="Выпадающий список" />
-									{/*<IntegrationReactSelect />*/}
-								</div>
-								<div>
-									Item Two
-									<br />
-									<Field name="Рецепты" />
-								</div>
-							</SwipeableViews>
-							<div style={{textAlign: 'center'}}>
-								<Button variant="raised" color="primary">Сохранить</Button>
-								&nbsp;&nbsp;&nbsp;
-								<Button variant="raised">Отменить</Button>
-							</div>
-						</div>
+						<TabLayout>
+							{Object.keys(tabs).map(tabName => (
+								<TabBody key={tabName} label={tabName}>
+									{tabs[tabName].map((field, i) => (
+										<___ key={`${i}-${field.name}`}>
+											{<FieldSeparator show={field.separator & FormSeparator.BEFORE} />}
+											{RenderComponent({
+												type: GetRenderer(field.renderer),
+												width: field.width,
+												property: field.property
+											})}
+											{<FieldSeparator show={field.separator & FormSeparator.AFTER} />}
+										</___>
+
+									))}
+								</TabBody>
+							))}
+
+							{/*
+							<TabBody label="Основное">
+								<SelectControl
+									name="city_ids"
+									label="Выпадающий список"
+									multiple
+									dataSource={this.cityDataSource}
+									description="Выберите города, куда может быть отправлен субъект"
+								/>
+								<Control name="name" label="Название" multiline />
+								<Control name="owner_id" label="Владелец" />
+							</TabBody>
+
+							<TabBody label="Рецепты">
+								<Control name="recipe" label="Рецепты" />
+							</TabBody>
+
+							<TabBody label="Прочее">
+								<Control name="recipe_x" label="Рецепт 2ы" />
+								<Control name="recipe_x" label="Рецепт 3ы" />
+							</TabBody>*/}
+						</TabLayout>
+
+						<FormSubmit/>
 					</Paper>
 				</FormCls>
+			</div>
+		);
+	}
+}
+
+class FormSubmit extends ReactComponent {
+	render() {
+		return (
+			<div {...this.cls} style={{textAlign: 'center'}}>
+				<Button variant="raised" color="primary">Сохранить</Button>
+				&nbsp;&nbsp;&nbsp;
+				<Button variant="raised">Отменить</Button>
 			</div>
 		);
 	}

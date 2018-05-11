@@ -4,9 +4,9 @@ import {
 } from "material-ui";
 import FormContext from "./FormContext";
 
-export default class Field extends ReactComponent {
+export default class Control extends ReactComponent {
+	@prop label;
 	@prop description;
-	@prop value;
 	@prop multiline;
 	@prop onChange;
 	@prop formContext;
@@ -28,17 +28,23 @@ export default class Field extends ReactComponent {
 		return `${this.formContextName}-${this.name}`;
 	}
 
+	// For label shrink
+	get value() {
+		return this.contextValue;
+	}
+
 	get contextValue() {
 		if(this.formContext) {
 			return this.formContext.contextValue[this.name] || this.defaultControlledValue;
 		}
 
-		return this.value || this.defaultControlledValue;
+		return this.props.value || this.defaultControlledValue;
 	}
 
 	set contextValue(value) {
 		if(this.formContext) {
 			let newValue;
+
 			if(this.formContext.isArray) {
 				let index = parseInt(this.name);
 
@@ -63,16 +69,20 @@ export default class Field extends ReactComponent {
 		}
 	}
 
+	valueFromChangeHandler(ev) {
+		return ev.target.value;
+	}
+
 	get wire() {
 		return {
 			value: this.contextValue,
-			onChange: ev => this.contextValue = ev.target.value
+			onChange: (...args) => this.contextValue = this.valueFromChangeHandler(...args)
 		}
 	}
 
 	get controlProps() {
 		return {
-			style: {marginTop:'0.5em'}
+			style: {marginTop:'0.5em'},
 		};
 	}
 
@@ -82,6 +92,11 @@ export default class Field extends ReactComponent {
 
 	get fieldProps() {
 		return {
+			id: this.fieldId,
+			name: this.name,
+
+			...this.wire,
+
 			multiline: !!this.multiline,
 			startAdornment: this.startAdornment && <InputAdornment position="start">{this.startAdornment}</InputAdornment>,
 			endAdornment: this.endAdornment && <InputAdornment position="end">{this.endAdornment}</InputAdornment>,
@@ -89,20 +104,18 @@ export default class Field extends ReactComponent {
 	}
 
 	@hook Label() {
+		if(!this.label) {
+			return '';
+		}
+
 		return (
-			<InputLabel htmlFor={this.fieldId} {...this.labelProps}>{this.name}</InputLabel>
+			<InputLabel htmlFor={this.fieldId} {...this.labelProps}>{this.label}</InputLabel>
 		);
 	}
 
 	@hook Field() {
 		return (
-			<Input
-				id={this.fieldId}
-				name={this.name}
-
-				{...this.wire}
-				{...this.fieldProps}
-			/>
+			<Input {...this.fieldProps} />
 		);
 	}
 
@@ -110,6 +123,18 @@ export default class Field extends ReactComponent {
 		return (
 			<FormHelperText>{this.description}</FormHelperText>
 		);
+	}
+
+	get controlEl() {
+		return ReactDOM.findDOMNode(this);
+	}
+
+	focus() {
+		this.controlEl.focus();
+	}
+
+	blur() {
+		this.controlEl.blur();
 	}
 
 	contextualRender() {

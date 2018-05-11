@@ -5,8 +5,8 @@ export default class ModelForm extends Form {
 	// 	return (
 	// 		<div>
 	// 			...tabs...
-	// 			<Field name="ta" />
-	// 			<Field name="tb" />
+	// 			<Control name="ta" />
+	// 			<Control name="tb" />
 	// 		</div>
 	// 	);
 	// }

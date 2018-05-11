@@ -11,6 +11,10 @@ export default class BackendModel extends CommonModel {
 	// static CustomProperties = {};
 	// static Options = {};
 
+	static get SearchCriteria() {
+		return ['name'];
+	}
+
 	static get TableName() {
 		return ModelManager.getTableName(this.Code);
 	}
@@ -42,15 +46,97 @@ export default class BackendModel extends CommonModel {
 		return new this(row);
 	}
 
+	static PrepareSearchCriteria(searchQuery) {
+		if(!searchQuery) {
+			return null;
+		}
+
+		searchQuery = `${searchQuery}`.replace(/\s+/, ' ').trim();
+
+		if(!searchQuery) {
+			return null;
+		}
+
+		let words = searchQuery.split(' ').slice(0, 16);
+		let useInverted = searchQuery != searchQuery.invertKeyboardLayout();
+
+		words = words.filter(x => x);
+
+		if(words.length < 1) {
+			return null;
+		}
+
+		return {
+			columns: this.SearchCriteria,
+			values: words.map(word => {
+				let result = [{
+					search: word,
+					weight: 2
+				}];
+
+				if(useInverted) {
+					result.push({
+						search: word.invertKeyboardLayout(),
+						weight: 1
+					});
+				}
+
+				return result;
+			})
+		};
+	}
+
 	static async Search(params = {}, outMeta = {}) {
 		params = params || {};
 
 		params.order = params.order || { id: Order.DESC };
 		params.filter = params.filter || {};
+		params.search = params.search || null;
+
+		let search = this.PrepareSearchCriteria(params.search);
 
 		const virtualProps = this.VirtualProperties.map(p => p.name);
 
 		let query = this.Query.search(params.filter, virtualProps);
+
+		// Before ORDER and LIMIT, but after WHERE
+		if(search) {
+			query.select(search.columns.map((column, i) => ({
+				[`$search_${i}`]: column}
+			)));
+
+			let wrap = x => `(${x})`;
+
+			let bindings = {};
+			let relevanceQuery = wrap(search.values.map((words, wordGroupIndex) => {
+				return wrap(words.map((word, wordIndex) => {
+					let valueIndex = wordGroupIndex * words.length + wordIndex;
+
+					bindings[`search_${valueIndex}`] = `%${word.search}%`;
+
+					return search.columns.map((column, columnIndex) => {
+						const valueWeight = word.weight;
+						const columnWeight = search.columns.length - columnIndex;
+
+						// 1xxx for inverted keyboard layout, 2xxx for original typing
+						// x010-x990 for columns in order they're defined in SearchCriteria
+
+						// This way search will respect primarily a keyboard layout so inverse
+						// suggestions will be always at the bottom.
+						let weight = 1000 * valueWeight + 10 * columnWeight;
+
+						return `($search_${columnIndex} LIKE :search_${valueIndex}) * ${weight}`;
+					}).join(' + ');
+				}).join(') + ('));
+			}).join(') * ('));
+
+			query = DB
+				.select(['*', { $search_relevance: DB.raw(relevanceQuery, bindings) }])
+				.from(query.withoutCalcFoundRows().as('T'))
+				.withCalcFoundRows()
+				.having('$search_relevance', '>', search.minRelevance || 0)
+				.orderBy('$search_relevance', Order.DESC);
+		}
 
 		Object.keys(params.order).forEach(key => {
 			query.orderBy(key, params.order[key]);
@@ -66,13 +152,27 @@ export default class BackendModel extends CommonModel {
 			}
 		}
 
-		// TODO: Implement limits
 		// TODO: Grouping?
 
-		const rows = await query;
-		const total = await DB.queryVal(`SELECT FOUND_ROWS()`);
+		let rows = [];
+		let total = 0;
+
+		await DB.transaction(async transaction => {
+			rows = await query.transacting(transaction);
+			total = await DB.queryVal(`SELECT FOUND_ROWS()`, {}, transaction);
+		});
 
 		Object.assign(outMeta, {total});
+
+		// dpr(rows);
+
+		rows.forEach(row => {
+			Object.keys(row).forEach(key => {
+				if(key.slice(0, 8) == '$search_') {
+					delete row[key];
+				}
+			})
+		});
 
 		const rowIds = rows.map(row => row.id);
 		const rowRefs = {};
@@ -115,7 +215,7 @@ export default class BackendModel extends CommonModel {
 		Object.keys(data).forEach(key => {
 			const property = this.constructor.PropertyByName(key);
 
-			if(property.secure) {
+			if(property.writeonly) {
 				delete data[key];
 			}
 		});

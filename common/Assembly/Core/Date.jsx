@@ -27,13 +27,18 @@ global.dateFormat = function dateFormat( format, timestamp ) {
 	let txt_months_gen =  ["", "января", "февраля", "марта", "апреля",
 		"мая", "июня", "июля", "августа", "сентября", "октября", "ноября",
 		"декабря"];
+
+	let txt_months_gen_short =  ["", "янв", "фев", "мар", "апр",
+		"мая", "июня", "июля", "авг", "сен", "окт", "ноя",
+		"дек"];
+
 	let f = {
 		// Day
 		d: function(){
 			return pad(f.j(), 2);
 		},
 		D: function(){
-			t = f.l(); return t.substr(0,3);
+			return f.l().substr(0,3);
 		},
 		j: function(){
 			return jsdate.getDate();
@@ -76,14 +81,16 @@ global.dateFormat = function dateFormat( format, timestamp ) {
 		F: function(){
 			return txt_months_gen[f.n()];
 		},
+		M: function(){
+			//t = f.F(); return t.substr(0,3);
+			return txt_months_gen_short[f.n()];
+		},
+
 		f: function(){
 			return txt_months[f.n()];
 		},
 		m: function(){
 			return pad(f.n(), 2);
-		},
-		M: function(){
-			t = f.F(); return t.substr(0,3);
 		},
 		n: function(){
 			return jsdate.getMonth() + 1;

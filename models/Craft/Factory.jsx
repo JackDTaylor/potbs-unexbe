@@ -2,6 +2,6 @@
 @registerBundle('/craft/factory')
 export default class CraftFactory extends PlatformSpecificModel {
 	@attachedToWidget(false)
-	@defaultFormTab('Рецепты')
+	@formDefaultTab('Рецепты')
 	@property resources;
 }

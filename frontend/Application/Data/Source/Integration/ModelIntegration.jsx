@@ -34,6 +34,14 @@ export class ModelFormIntegration extends BasicFormIntegration {
 	get component() {
 		return ModelForm;
 	}
+
+	get properties() {
+		return this.model.PropertiesByScope(Scope.FORM);
+	}
+
+	get fieldOrder() {
+		return this.model.FormConfig.fieldOrder;
+	}
 }
 
 /**

@@ -45,6 +45,14 @@ export default class EntityModule extends ApiModule {
 		return order;
 	}
 
+	prepareSearch(Model) {
+		if(this.request.query.search) {
+			return `${this.request.query.search}`;
+		}
+
+		return null;
+	}
+
 	prepareFilter(Model) {
 		if(this.request.query.filter) {
 			this.request.query.filter = JSON.parse(this.request.query.filter);
@@ -97,17 +105,16 @@ export default class EntityModule extends ApiModule {
 		offset = Math.clamp(offset, 0, Infinity);
 		count = Math.clamp(count, 0, Model.MaxListCount || apiConfig.list.maxCount);
 
-		return {offset, count}
+		return {offset, count};
 	}
 
 	async readAction(Model) {
-		// if(!this.request.query.id) await delay(10000);
-
-		const order = this.prepareOrder(Model);
+		const search = this.prepareSearch(Model);
 		const filter = this.prepareFilter(Model);
+		const order  = this.prepareOrder(Model);
 		const paging = this.preparePaging(Model);
 
-		return await Model.Search({order,filter,paging}, this.responseMeta);
+		return await Model.Search({search, filter, order, paging}, this.responseMeta);
 	}
 
 	async createAction(Model) {

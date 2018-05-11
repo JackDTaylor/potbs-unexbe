@@ -1,5 +1,3 @@
-
-
 export default class Link extends ReactComponent {
 	@prop href;
 	@prop target;

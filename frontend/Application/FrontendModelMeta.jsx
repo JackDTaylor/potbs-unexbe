@@ -55,6 +55,7 @@ class GridConfig extends FrontendModelMeta {
 }
 
 class FormConfig extends FrontendModelMeta {
+	fieldOrder = [];
 }
 
 class ViewConfig extends FrontendModelMeta {

@@ -5,6 +5,10 @@ String.prototype.lcFirst = function() {
 	return this.slice(0, 1).toLowerCase() + this.slice(1);
 };
 
+String.prototype.invertKeyboardLayout = function(sticky = false) {
+	return KeyboardLayout.Invert(this, sticky);
+};
+
 (original => (
 	/** @param chars */
 	String.prototype.trimLeft = function trimLeft(chars = null) {

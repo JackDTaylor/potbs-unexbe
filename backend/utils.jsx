@@ -1,5 +1,6 @@
 import "./../common/utils";
 
+import "./utils/FrontendSurrogates";
 import "./utils/Dpr";
 import "./utils/Console";
 

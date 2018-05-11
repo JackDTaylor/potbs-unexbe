@@ -5,13 +5,25 @@ import {
 } from "./Integration/ModelIntegration";
 
 export default class ModelSource extends DataSource {
-	model;
+	_model;
 	queryRecordsMeta = {};
 
 	constructor(modelCode) {
 		super();
 
 		this.modelCode = modelCode;
+	}
+
+	get model() {
+		if(this._model == null) {
+			throw new Error("You have to prepare() DataSource first");
+		}
+
+		return this._model;
+	}
+
+	set model(value) {
+		this._model = value;
 	}
 
 	async initIntegrations() {
@@ -21,21 +33,32 @@ export default class ModelSource extends DataSource {
 	}
 
 	async prepare() {
+		if(this.isPrepared) {
+			return;
+		}
+
 		this.model = await GetModel(this.modelCode);
 
 		return await super.prepare();
 	}
 
 	async queryRecord(id) {
+		await this.prepare();
+
 		return await this.model.FindById(id);
 	}
 
-	async queryRecords(filter, order, paging) {
-		this.queryRecordsMeta = {};
-		return await this.model.Search({ filter, order, ...paging }, this.queryRecordsMeta);
-	}
+	async queryRecords({search, filter, order, paging} = {}) {
+		await this.prepare();
 
-	get lastTotal() {
-		return this.queryRecordsMeta.total;
+		this.queryRecordsMeta = {};
+		let result = await this.model.Search({ search, filter, order, ...paging }, this.queryRecordsMeta);
+
+		// Meta
+		let offset = paging ? Math.clamp(parseInt(paging.offset) || 0, 0, Infinity) : 0;
+		this.calculateQueryMeta(this.queryRecordsMeta.total, offset, result.length);
+
+		return result;
+
 	}
 }

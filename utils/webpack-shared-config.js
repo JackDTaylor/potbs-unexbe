@@ -13,6 +13,7 @@ module.exports = {
 		'material-ui/colors':      'MaterialUI_colors',
 		'material-ui/styles':      'MaterialUI_styles',
 		'material-ui/transitions': 'MaterialUI_transitions',
+		'material-ui-pickers':     'MaterialUI_pickers',
 
 		'@devexpress/dx-react-grid': 'DxReactGrid',
 		'@devexpress/dx-react-grid-material-ui': 'DxReactGridMaterialUi',

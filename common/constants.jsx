@@ -144,8 +144,22 @@ global.Scope = class extends Enum {
 	}
 };
 
+global.Keyboard = class extends Enum {
+	static BACKSPACE = 8;
+	static DELETE    = 46;
+
+	static LEFT      = 37;
+	static UP        = 38;
+	static RIGHT     = 39;
+	static DOWN      = 40;
+
+	static ESCAPE    = 27;
+	static ENTER     = 13;
+	static SPACE     = 32;
+	static BREAK     = 19;
+};
+
 global.Type = class extends Enum {
-	// SQL Types
 	static STRING    = 'STRING';
 	static NUMBER    = 'NUMBER';
 	static DATE      = 'DATE';
@@ -171,6 +185,13 @@ global.ConstraintAction = class extends Enum {
 global.Order = class extends Enum {
 	static ASC  = 'asc';
 	static DESC = 'desc';
+};
+
+global.FormSeparator = class extends Enum {
+	static NONE   = 0b00;
+	static BEFORE = 0b10;
+	static AFTER  = 0b01;
+	static BOTH   = 0b11;
 };
 
 // noinspection CommaExpressionJS

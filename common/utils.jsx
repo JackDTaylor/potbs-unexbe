@@ -3,6 +3,7 @@ import "./constants";
 import "./Assembly/Utils/Range";
 import "./Assembly/Utils/Random";
 import "./Assembly/Utils/Plural";
+import "./Assembly/Utils/KeyboardLayout";
 
 import "./Assembly/Fixes";
 import "./Assembly/Types";

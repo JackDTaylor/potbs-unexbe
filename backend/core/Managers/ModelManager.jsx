@@ -54,7 +54,7 @@ class ModelManager {
 			throw new Error(`Model '${modelName}' not found`);
 		}
 
-		return (await Bluebird.resolve(import('../../../models/' + modelName))).default;
+		return await Bluebird.resolve(import('../../../models/' + modelName)).get('default');
 	}
 	/**
 	 * @protected

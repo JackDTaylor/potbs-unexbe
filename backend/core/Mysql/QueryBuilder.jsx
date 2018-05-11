@@ -75,6 +75,11 @@ export default class QueryBuilder extends KnexQueryBuilder {
 		return this;
 	}
 
+	withoutCalcFoundRows() {
+		this._sqlCalcFoundRows = false;
+		return this;
+	}
+
 	search(conditions, havingColumns = []) {
 		let orMode = false;
 
