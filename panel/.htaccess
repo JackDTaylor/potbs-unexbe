@@ -1,0 +1,7 @@
+PassengerEnabled Off
+
+RewriteEngine On
+RewriteBase /dmi/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* /dmi/index.php [L]
