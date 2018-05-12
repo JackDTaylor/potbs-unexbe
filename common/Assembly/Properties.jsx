@@ -1,5 +1,7 @@
 const utils = _decoratorUtils;
 
+const DEBUG_SHARED_OVERRIDE = false;
+
 global.abstract = function(proto, field) {
 	return {
 		get() {
@@ -13,10 +15,14 @@ global.abstract = function(proto, field) {
 	};
 };
 
-global.scoped            = scope  => defineKey('scope',  scope);
-global.attachedToWidget  = widget => defineKey('widget',  widget);
-global.type              = type   => defineKey('type', type);
-global.secure            = defineKey('secure', true);
+global.type              = value => defineKey('type',           value);
+global.scoped            = value => defineKey('scope',          value);
+global.formDefaultTab    = value => defineKey('formDefaultTab', value);
+global.formWidth         = value => defineKey('formWidth',      value);
+global.formSeparator     = value => defineKey('formSeparator',  value);
+global.attachedToWidget  = value => defineKey('widget',         value);
+
+global.writeonly         = defineKey('writeonly', true);
 global.hidden            = defineKey('hidden', true);
 
 global.cellRenderer      = renderer => defineKey('cellRendererOverride',   renderer);
@@ -37,34 +43,52 @@ global.property = function(proto, field, descriptor) {
 	};
 };
 
+const shared = function(proto, field, desciptor) {
+	if(proto.constructor.SharedProps.indexOf(field) < 0) {
+		proto.constructor.SharedProps.push(field);
+	}
+
+	return {
+		...desciptor,
+		configurable: true,
+	};
+};
+
 global.PropertyDescriptor = class PropertyDescriptor {
+	static SharedProps = [];
+
 	type = PropertyType.VARCHAR(2**31);
 	name = null;
 
-	label = 'unknown';
-	description = '';
-	placeholder = '';
+	@shared label = 'unknown';
+	@shared description = '';
+	@shared placeholder = '';
 
-	primaryKey = false;
-	autoIncrement = false;
-	allowNull = false;
-	unique = false;
-	hidden = false;
+	@shared primaryKey = false;
+	@shared autoIncrement = false;
+	@shared allowNull = true;
+	@shared unique = false;
+	@shared hidden = false;
+
 	stored = false;
 	defaultValue = null;
-	writable = true;
-	secure = false;
+	readonly = true;
+	writeonly = false;
 
 	expr = null;
 	get = null;
 	set = null;
 	scope = Scope.ALL;
 
-	cellRendererOverride = null;
-	fieldRendererOverride = null;
-	detailRendererOverride = null;
+	@shared cellRendererOverride = null;
+	@shared fieldRendererOverride = null;
+	@shared detailRendererOverride = null;
 
-	widget = 'defaultWidget';
+	@shared formDefaultTab = 'Основное';
+	@shared formWidth = false;
+	@shared formSeparator = FormSeparator.NONE;
+
+	@shared widget = 'defaultWidget';
 
 	constructor(name, data = {}) {
 		this.name = name;
@@ -74,6 +98,27 @@ global.PropertyDescriptor = class PropertyDescriptor {
 
 	override(data = {}) {
 		Object.assign(this, data);
+	}
+
+	linkTo(property) {
+		this.constructor.SharedProps.forEach(key => {
+			if(DEBUG_SHARED_OVERRIDE && this[key] != property[key]) {
+				this['@overridden'] = this['@overridden'] || {};
+				this['@overridden'][key] = this[key];
+			}
+
+			Object.defineProperty(this, key, {
+				configurable: true,
+
+				get() {
+					return property[key];
+				},
+
+				set(value) {
+					property[key] = value;
+				}
+			});
+		});
 	}
 
 	get queryable() {
@@ -94,20 +139,25 @@ global.PropertyDescriptor = class PropertyDescriptor {
 
 	postprocess() {
 		if(this.name == ID) {
-			// ID props are always readonly, hidden and excluded from view
-			this.writable = false;
+			// ID props are always readonly and hidden
+			this.readonly = true;
 			this.hidden = true;
-			this.scope = (this.scope | Scope.VIEW) ^ Scope.VIEW; // remove VIEW if present
+
+			// And excluded from all scopes except READ and LIST
+			this.scope = this.scope & (Scope.READ | Scope.LIST);
 		}
 
 		if(this.expr && !this.set) {
 			// Virtual props are readonly if they have no setter
-			this.writable = false;
+			this.readonly = true;
 		}
 
-		if(this.secure) {
-			// Secure props are not available for reading
-			this.scope = this.scope & Scope.Writable; // leave only Writable flags of what's present in scope
+		if(this.writeonly) {
+			// Secure props are not available for reading and only
+			// Writable flags are allowed.
+
+			// Leave only Writable flags of what's present in scope
+			this.scope = this.scope & Scope.Writable;
 		}
 	}
 

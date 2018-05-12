@@ -132,7 +132,7 @@ global.prop = function prop(proto, field, descriptor) {
 };
 
 window.internal = function internal(proto, field, descriptor) {
-	let value = proto[field] || (descriptor.initializer && descriptor.initializer());
+	let value = decoratedValue(proto, field, descriptor, fn => '');
 
 	return {
 		get: v => value,
@@ -141,3 +141,66 @@ window.internal = function internal(proto, field, descriptor) {
 	};
 };
 
+global.hook = function hook(proto, field, descriptor) {
+	const defaultRenderer = decoratedValue(proto, field, descriptor, fn => '');
+
+	const hasHooked    = `has${field.ucFirst()}`;
+	const beforeHooked = `before${field.ucFirst()}`;
+	const renderHooked = `render${field.ucFirst()}`;
+	const afterHooked  = `after${field.ucFirst()}`;
+
+	Object.defineProperty(proto, hasHooked, {
+		enumerable: false,
+		configurable: true,
+
+		get() {
+			return true;
+		}
+	});
+
+	Object.defineProperty(proto, beforeHooked, {
+		enumerable: false,
+		configurable: true,
+
+		value() {
+			return undefined;
+		}
+	});
+
+	Object.defineProperty(proto, renderHooked, {
+		enumerable: false,
+		configurable: true,
+
+		value() {
+			return defaultRenderer.apply(this);
+		}
+	});
+
+	Object.defineProperty(proto, afterHooked, {
+		enumerable: false,
+		configurable: true,
+
+		value() {
+			return undefined;
+		}
+	});
+
+	return {
+		enumerable: false,
+		configurable: true,
+
+		get() {
+			if(this[hasHooked] == false) {
+				return '';
+			}
+
+			return (
+				<___>
+					{this[beforeHooked]()}
+					{this[renderHooked]()}
+					{this[afterHooked]()}
+				</___>
+			);
+		}
+	}
+}

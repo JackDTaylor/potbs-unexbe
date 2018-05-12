@@ -7,7 +7,7 @@ const NO_VALUE = Symbol('NO_VALUE');
 export default class AbstractCell extends ReactComponent {
 	static CssClasses = ['Cell'];
 
-	@prop dataSource;
+	@prop record;
 	@prop property;
 	@prop value;
 

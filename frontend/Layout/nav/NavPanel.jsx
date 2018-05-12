@@ -5,13 +5,12 @@ export default class NavPanel extends ReactComponent {
 	static CssClasses = ['NavPanel', 'DrawerContents'];
 
 	render() {
-		const settingsUrl = '/settings';
 		const {items, onNavigate} = this.props;
 		let i = 0;
 
 		let itemLists = [
-			items.filter(item => item.url != settingsUrl),
-			items.filter(item => item.url == settingsUrl)
+			items.filter(item => item.itemList != 1),
+			items.filter(item => item.itemList == 1)
 		];
 
 		return (

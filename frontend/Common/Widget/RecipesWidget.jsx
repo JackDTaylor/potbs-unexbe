@@ -4,11 +4,11 @@ import Empty from "../Typography/Empty";
 
 export default class RecipesWidget extends BaseWidget {
 	render() {
-		(async fn => console.log(await this.dataSource.resources))();
+		(async fn => console.log(await this.record.resources))();
 
 		return (
 			<div {...this.cls}>
-				{this.dataSource.resources.map(resource => (
+				{this.record.resources.map(resource => (
 					<div key={resource.id}>
 						<Caption variant="subheading"><b>{resource}</b></Caption>
 						<div style={{marginLeft: '1em', marginBottom: '1em'}}>

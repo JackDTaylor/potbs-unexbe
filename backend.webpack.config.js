@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const nodeExternals = require('webpack-node-externals');
 const webpackSharedConfig = require("./utils/webpack-shared-config");
+const restrictFromUsage = require("./utils/restrict-from-usage").restrictFromUsage;
 const UpgradeBuildNumber = require("./utils/version-plugin").UpgradeBuildNumber;
 const WatchExternalFilesPlugin = require('webpack-watch-files-plugin').default;
 
@@ -15,7 +16,6 @@ RestartOnCompile.prototype.apply = function(compiler) {
 		fs.closeSync(fs.openSync(__dirname + '/tmp/restart.txt', 'w'));
 	});
 };
-
 
 module.exports = {
 	...webpackSharedConfig,
@@ -29,7 +29,11 @@ module.exports = {
 
 	target: 'node',
 
-	externals: [nodeExternals()],
+	externals: [
+		webpackSharedConfig.externals,
+		restrictFromUsage('./frontend/', 'backend', 'global'),
+		nodeExternals(),
+	],
 	watchOptions: {
 		ignored: [`../node_modules/`],
 	},

@@ -1,6 +1,7 @@
 @import "./images";
 @import "./icons";
 @import "./utils";
+@import "./layout/nav";
 @import "./layout/status-panel";
 
 @import "./renderers/cell";
@@ -15,6 +16,108 @@
 	right: 20px;
 	font-size: 10px;
 	opacity: 0.25;
+}
+
+.dmi-form-layout {
+	.dmi-control {
+		width: 100%;
+		max-width: 768px;
+		margin: 0 auto 0.5em;
+		&.dmi-form {
+
+		}
+	}
+}
+
+
+.dmi-form-layout {
+	.dmi-tab-body {
+		display: inline-flex;
+		flex-wrap: wrap;
+		width: 100%;
+
+		> .dmi-field {
+			width: 100%;
+			padding: 0 5px;
+			flex-grow: 1;
+
+			@media (max-width: 639px) {
+				flex-grow: 1 !important;
+				width: 100% !important;
+			}
+		}
+
+		> .dmi-field-separator {
+			width: 100%;
+			flex-grow: 1;
+		}
+	}
+}
+
+.dmi-form-submit {
+	padding: 0.5em 0 1.5em;
+}
+
+.dmi-select-control-input {
+	.dmi-select-control-input-inner {
+		display: inline-flex;
+		flex-wrap: wrap;
+		position: relative;
+		outline: none;
+		width: 100%;
+
+		> div[role="button"] {
+			margin: 0 2px 4px;
+
+			&:focus {
+				background-color: #b4b4b4;
+			}
+
+			> svg {
+			}
+		}
+
+		> input {
+			min-width: 100px;
+			padding-left: 0.5em;
+		}
+
+		> .dmi-select-control-input-popper-ref {
+			position: absolute;
+			height: 100%;
+			max-height: 75px;
+			width: 100%;
+			background: transparent;
+			z-index: -1;
+			bottom: 0;
+		}
+	}
+}
+
+.dmi-select-control-dropdown-popup {
+	z-index: 1200;
+	overflow-y: auto;
+	overflow-x: hidden;
+	box-shadow:
+			0 2px 4px  -1px fade(black, 2%),
+			0 4px 5px  0    fade(black, 14%),
+			0 1px 10px 0    fade(black, 12%);
+
+	.dmi-select-control-dropdown {
+		ul {
+			li {
+				&.selected {
+					background: rgba(33, 150, 243, 0.85) linear-gradient(transparent, fade(black, 2%));
+					color: white;
+
+					> div {
+						> h3 { color: fade(white, 96%); }
+						> p  { color: fade(white, 68%); }
+					}
+				}
+			}
+		}
+	}
 }
 
 a.dmi.dmi-link {
@@ -116,6 +219,11 @@ a.dmi.dmi-link {
 
 .dmi.dmi-empty {
 	font-style: italic;
+}
+
+.dmi.dmi-empty-placeholder {
+	text-align: center;
+	padding: 1.5em 1em;
 }
 
 .dmi.dmi-error-sign {

@@ -23,6 +23,10 @@ global.PropertyType.GENERIC = class GENERIC {
 		});
 	}
 
+	get isMultiline() {
+		return false;
+	}
+
 	get cellRenderer() {
 		return this.constructor.CellRenderer;
 	}
@@ -114,6 +118,10 @@ global.PropertyType.VARCHAR = class VARCHAR extends PropertyType.GENERIC {
 global.PropertyType.TEXT = class TEXT extends PropertyType.GENERIC {
 	static PrimitiveType = Type.STRING;
 	static ParamNames = [];
+
+	get isMultiline() {
+		return true;
+	}
 };
 
 /**
@@ -133,6 +141,7 @@ global.PropertyType.JSON = class JSON extends PropertyType.GENERIC {
 global.PropertyType.TIMESTAMP = class TIMESTAMP extends PropertyType.GENERIC {
 	static PrimitiveType = Type.DATE;
 	static CellRenderer = CellRenderers.DateCell;
+	static FieldRenderer = FieldRenderers.DateField;
 	static ParamNames = [];
 
 	encodeValue(value) {

@@ -1,10 +1,12 @@
 import Endpoint from "../Endpoint";
-import ModelFormProvider from "../../Data/Form/ModelFormProvider";
+import ModelSource from "../../Data/Source/ModelSource";
+import FormProvider from "../../Data/Provider/Record/FormProvider";
 
 export default class ModelEditEndpoint extends Endpoint {
 	constructor(modelCode) {
-		let formProvider = new ModelFormProvider(`Bundle:${modelCode}:Edit`, modelCode);
+		let dataSource = new ModelSource(modelCode);
+		let provider = new FormProvider(`Bundle:${modelCode}:Edit`, dataSource);
 
-		super('Model/EditPage', { formProvider, modelCode });
+		super('FormPage', { provider, modelCode, createNew: false });
 	}
 }

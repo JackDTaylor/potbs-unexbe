@@ -1,6 +1,6 @@
 import Header from "../Common/Typography/Header";
 import Text from "../Common/Typography/Text";
-import Page from "./Page";
+import Page from "./Base/Page";
 import Link from "../Common/Link";
 
 const errors = {

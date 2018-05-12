@@ -13,6 +13,8 @@ global.CellRenderers = {
 global.FieldRenderers = {
 	AbstractField: 'Field/AbstractField',
 	DefaultField:  'Field/DefaultField',
+	SelectField:   'Field/SelectField',
+	DateField:     'Field/DateField',
 };
 
 global.DetailRenderers = {

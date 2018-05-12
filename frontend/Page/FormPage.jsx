@@ -1,34 +1,19 @@
-import Page from "./Page";
+import RecordPage from "./Base/RecordPage";
+import FormLayout from "../Common/Form/FormLayout";
+import FormProvider from "../Application/Data/Provider/Record/FormProvider";
 
-export default class FormPage extends Page {
-	fields;
-	defaults;
-
-	get formProvider() {
-		return this.params.formProvider;
+export default class FormPage extends RecordPage {
+	get providerConstraint() {
+		return FormProvider;
 	}
 
 	get pageTitle() {
 		return this.params.pageTitle || 'Форма';
 	}
 
-	async getDefaults() {
-		return {};
-	}
-
-	async preparePage() {
-		// this.fields = await this.formProvider.fetchFields();
-		// this.defaults = await this.getDefaults();
-
-		return await super.preparePage();
-	}
-
 	renderContents() {
 		return (
-			<FormLayout
-				provider={this.formProvider}
-				dataSource={this.dataSource}
-			/>
+			<FormLayout provider={this.provider} record={this.record} />
 		);
 	}
 }

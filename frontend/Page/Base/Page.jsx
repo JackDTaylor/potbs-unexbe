@@ -1,4 +1,4 @@
-import Loader from "../Common/Loader";
+import Loader from "../../Common/Loader";
 
 export default class Page extends ReactComponent {
 	@prop params;
@@ -26,13 +26,12 @@ export default class Page extends ReactComponent {
 
 		AppController.pageTitle = this.pageTitle;
 
-		this.contents = await this.renderContents();
 		this.isReady = true;
 	}
 
 	async preparePage() {}
 
-	async renderContents() {
+	renderContents() {
 		return '';
 	}
 
@@ -42,7 +41,7 @@ export default class Page extends ReactComponent {
 		}
 
 		return (
-			<div {...this.cls}>{this.contents}</div>
+			<div {...this.cls}>{this.renderContents()}</div>
 		);
 	}
 }

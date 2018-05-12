@@ -5,7 +5,7 @@ import {
 import WidgetHandle from "./WidgetHandle";
 
 export default class WidgetWrapper extends ReactComponent {
-	@prop dataSource;
+	@prop record;
 	@prop widget;
 
 	render() {
@@ -30,7 +30,7 @@ export default class WidgetWrapper extends ReactComponent {
 						)}
 
 						<TableRow>
-							<TableCell className="content-cell">{RenderComponent({ ...this.widget, dataSource: this.dataSource })}</TableCell>
+							<TableCell className="content-cell">{RenderComponent({ ...this.widget, record: this.record })}</TableCell>
 						</TableRow>
 					</TableBody>
 				</Table>

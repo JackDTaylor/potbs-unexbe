@@ -6,15 +6,19 @@ const fs = require('fs');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpackSharedConfig = require("./utils/webpack-shared-config");
+const restrictFromUsage = require("./utils/restrict-from-usage").restrictFromUsage;
 const UpgradeBuildNumber = require("./utils/version-plugin").UpgradeBuildNumber;
 
 module.exports = {
 	...webpackSharedConfig,
 
-	externals: {
-		...webpackSharedConfig.externals,
-		'bluebird': 'Bluebird',
-	},
+	externals: [
+		{
+			...webpackSharedConfig.externals,
+			'bluebird': 'Bluebird',
+		},
+		restrictFromUsage('./backend/', 'frontend', 'window'),
+	],
 
 	entry: `${baseDir}/frontend.jsx`,
 

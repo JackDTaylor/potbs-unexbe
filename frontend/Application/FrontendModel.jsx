@@ -41,7 +41,7 @@ export default class FrontendModel extends CommonModel {
 		Object.keys(layout).forEach(key => {
 			const type = layout[key].type;
 			if(type && type.$class) {
-				layout[key].type = PropertyType.ByClass(type.$class, type);
+				layout[key]['type'] = PropertyType.ByClass(type.$class, type);
 			}
 
 			frontendProperties.forEach(prop => {
@@ -67,6 +67,12 @@ export default class FrontendModel extends CommonModel {
 	}
 
 	static async FindById(id) {
+		id = parseInt(id);
+
+		if(!id) {
+			return null;
+		}
+
 		if(this.ModelCache.has(id) == false) {
 			const model = await API.findEntity(this.Code, id);
 
@@ -114,7 +120,7 @@ export default class FrontendModel extends CommonModel {
 
 		let properties = this.constructor.PropertiesByFilter(propertyFilter).filter(p => p.widget == name);
 
-		widgetConfig.propertyProvider.registerDataSource(this);
+		widgetConfig.propertyProvider.registerRecord(this);
 		widgetConfig.propertyProvider.registerProperties(properties);
 
 		return widgetConfig;
@@ -149,6 +155,14 @@ export default class FrontendModel extends CommonModel {
 
 	toReact() {
 		return <Link href={this} />
+	}
+
+	toMenuItem() {
+		return this.name;
+	}
+
+	toChipLabel() {
+		return this.name;
 	}
 }
 

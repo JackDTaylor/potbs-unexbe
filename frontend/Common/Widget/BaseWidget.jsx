@@ -2,7 +2,7 @@ import WidgetProperties from "../View/WidgetProperties";
 
 class PropertyProvider {
 	properties = {};
-	dataSource = {};
+	record = {};
 
 	registerProperty(property) {
 		this.properties[property.name] = {
@@ -18,8 +18,8 @@ class PropertyProvider {
 		properties.forEach(property => this.registerProperty(property));
 	}
 
-	registerDataSource(dataSource) {
-		this.dataSource = dataSource;
+	registerRecord(record) {
+		this.record = record;
 	}
 
 	renderValue(name) {
@@ -28,7 +28,7 @@ class PropertyProvider {
 		}
 
 		const property = this.properties[name];
-		const value = this.dataSource[name];
+		const value = this.record[name];
 
 		let Renderer = property.renderer;
 
@@ -39,7 +39,7 @@ class PropertyProvider {
 		return RenderComponent({
 			type: GetRenderer(Renderer),
 			className: 'dmi-widget-property-value',
-			dataSource: this.dataSource,
+			record: this.record,
 			property: property,
 			value: value
 		});
@@ -50,7 +50,7 @@ export default class BaseWidget extends ReactComponent {
 	static PropertyProvider = PropertyProvider;
 
 	@prop propertyProvider;
-	@prop dataSource;
+	@prop record;
 
 	render() {
 		return (

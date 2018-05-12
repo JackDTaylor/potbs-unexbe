@@ -1,5 +1,4 @@
 import BaseWidget from "../Common/Widget/BaseWidget";
-import Action from "../Common/Action/Action";
 import DeleteAction from "../Common/Action/DeleteAction";
 import EditAction from "../Common/Action/EditAction";
 
@@ -56,6 +55,7 @@ class GridConfig extends FrontendModelMeta {
 }
 
 class FormConfig extends FrontendModelMeta {
+	fieldOrder = [];
 }
 
 class ViewConfig extends FrontendModelMeta {

@@ -5,6 +5,18 @@ import QueryCompiler from "./Mysql/QueryCompiler";
 
 import "./Managers/ModelManager";
 
+let generateBuilderFn = client => fn => new QueryBuilder(client);
+let generateCompilerFn = client => builder => new QueryCompiler(client, builder);
+
+let attachWorkers = (target) => {
+	let client = target.client || DB.db.client;
+
+	target.queryBuilder = generateBuilderFn(client);
+	target.queryCompiler = generateCompilerFn(client);
+
+	target.client.queryBuilder = generateBuilderFn(client);
+	target.client.queryCompiler = generateCompilerFn(client);
+};
 
 /** @type {Mysql} */
 let instance = null;
@@ -28,18 +40,10 @@ export default class Mysql {
 	}
 
 	constructor(config) {
-		let builder = fn => new QueryBuilder(this.db.client);
-		let compiler = builder => new QueryCompiler(this.db.client, builder);
-
 		this.db = Knex({...config });
 
-		this.db.queryBuilder        = builder;
-		this.db.client.queryBuilder = builder;
-
-		this.db.queryCompiler        = compiler;
-		this.db.client.queryCompiler = compiler;
+		attachWorkers(this.db);
 	}
-
 
 	getModelBundleUrls() {
 
@@ -84,8 +88,14 @@ export default class Mysql {
 	}
 
 
-	async query(sql, options = {}) {
-		let response = (await this.db.raw(sql, options))[0];
+	async query(sql, options = {}, transaction = null) {
+		let query = this.db.raw(sql, options);
+
+		if(transaction) {
+			query.transacting(transaction);
+		}
+
+		let response = (await query)[0];
 
 		if(valueType(response) == Array) {
 			return response.map(row => ({...row}));
@@ -94,16 +104,23 @@ export default class Mysql {
 		return response;
 	}
 
-	async queryRow(sql, options = {}) {
-		let rows = await this.query(sql, options);
+	async queryRow(sql, options = {}, transaction = null) {
+		let rows = await this.query(sql, options, transaction);
 
 		return rows[0];
 	}
 
-	async queryVal(sql, options = {}) {
-		let rows = await this.queryRow(sql, options);
+	async queryVal(sql, options = {}, transaction = null) {
+		let rows = await this.queryRow(sql, options, transaction);
 
 		return rows[ Object.keys(rows).first ];
+	}
+
+	async transaction(callback, errorCallback = fn=>{}) {
+		return this.db.transaction(function(trx) {
+			attachWorkers(trx);
+			return callback.apply(this, arguments);
+		}, errorCallback);
 	}
 }
 

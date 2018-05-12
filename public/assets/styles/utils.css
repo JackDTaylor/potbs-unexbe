@@ -3,3 +3,8 @@
   font-size: 1.6em;
   margin-left: 2px;
 }
+.text-ellipsis {
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}

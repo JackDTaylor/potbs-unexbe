@@ -1,0 +1,46 @@
+@import (less) "../../../node_modules/flatpickr/dist/themes/material_blue.css";
+
+html body {
+	.flatpickr-calendar {
+		font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+	}
+
+	span.flatpickr-weekday {
+		font-weight: 500;
+		color: rgba(255,255,255,0.75);
+	}
+
+	.flatpickr-current-month span.cur-month {
+		font-weight: 300;
+	}
+
+	.flatpickr-months {
+		.flatpickr-month {
+			 padding-top: 5px;
+			 height: 35px;
+		 }
+		.flatpickr-prev-month, .flatpickr-next-month {
+			top: 5px;
+
+			& > svg path {
+				fill: fade(white, 75%);
+			}
+
+			&:hover > svg path {
+				fill: fade(white, 50%);
+			}
+		}
+
+		.flatpickr-weekdays {
+			height: 35px;
+		}
+	}
+
+	.flatpickr-time input.numInput.flatpickr-hour,
+	.flatpickr-time input.numInput.flatpickr-minute {
+		font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+		font-weight: 300;
+		font-size: 24px;
+	}
+
+}
