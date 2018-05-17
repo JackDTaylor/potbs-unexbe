@@ -6,9 +6,11 @@ const assetsPath = 'public/assets';
 const executable = 'node_modules/.bin/icon-font-generator';
 const name = 'custom-icons';
 
+const compileOnly = (process.argv.indexOf('--compile-only') >= 0);
+
 const command = `${executable} ${assetsPath}/icons/*.svg -o ${assetsPath}/fonts/ -n ${name} -s --normalize`;
 
-const watcher = Chokidar.watch(`${assetsPath}/icons`, {ignored: /^\./, persistent: true});
+const watcher = Chokidar.watch(`${assetsPath}/icons`, {ignored: /^\./, persistent: !compileOnly});
 let timeoutId = null;
 
 const executor = async function() {
